@@ -1,0 +1,1 @@
+export const seaGreenColor = "#9ECEB9"
