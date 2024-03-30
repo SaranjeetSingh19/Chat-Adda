@@ -44,7 +44,7 @@ const Header = () => {
   };
   const navigateToGroup = () => navigate("/groups");
 
-  const openNotification = () => p[setIsNotification((prev) => !prev)];
+  const openNotification = () => [setIsNotification((prev) => !prev)];
 
   const handleLogout = () => {
     console.log("Logout button");

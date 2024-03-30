@@ -9,7 +9,7 @@ import moment from "moment"
 
 const Profile = () => {
   return (
-    <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
+    <Stack  spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar
         sx={{
           width: 120,
@@ -41,7 +41,10 @@ export const Profilecard = ({ text, Icon, heading }) => {
       {Icon && Icon}
 
       <Stack>
-        <Typography variant="body1">{text}</Typography>
+        <Typography  
+            color={"#42A992"}
+        
+        variant="body1">{text}</Typography>
         <Typography variant="caption" color={"#6F2764"}>
           {heading}
         </Typography>
