@@ -27,8 +27,8 @@ const AppLayout = () => (WrappedComponent) => {
             sm={4}
             md={3}
             height={"100%"}
-            bgcolor={"#C8FBE8"}
-            borderRight={"2px solid #42A992"}
+            bgcolor={"white"}
+            // borderRight={"2px solid #42A992"}
             sx={{ display: { xs: "none", sm: "block" } }}
           >
             <ChatList chats={sampleChat} chatId={chatId} handleDeleteChat={handleDeleteChat}/>

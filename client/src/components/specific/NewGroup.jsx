@@ -12,9 +12,9 @@ import UserItem from "../shared/UserItem";
 import { useInputValidation } from "6pp";
 
 const NewGroup = () => {
-  const [memebers, setMembers] = useState([]);
-  const [selectedMemebers, setSelectedMembers] = useState([]);
   const groupName = useInputValidation("");
+  const [memebers, setMembers] = useState(sampleChat);
+  const [selectedMemebers, setSelectedMembers] = useState([]);
 
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
