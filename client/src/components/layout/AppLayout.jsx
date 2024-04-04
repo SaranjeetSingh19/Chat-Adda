@@ -27,9 +27,18 @@ const AppLayout = () => (WrappedComponent) => {
             sm={4}
             md={3}
             height={"100%"}
-            bgcolor={"white"}
+            bgcolor={"lightseagreen"}
+          
             // borderRight={"2px solid #42A992"}
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{ 
+              display: { 
+                xs: "none", sm: "block" 
+              } ,
+             
+                overflow: "hidden",
+                overflowY: "scroll"
+           
+            }}
           >
             <ChatList chats={sampleChat} chatId={chatId} handleDeleteChat={handleDeleteChat}/>
           </Grid>

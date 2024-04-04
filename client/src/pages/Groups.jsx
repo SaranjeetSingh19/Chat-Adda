@@ -335,14 +335,24 @@ console.log("Remove mem id: ", id);
         open={isMobileMenuOpen}
         onClose={handleMobileClose}
       >
-        <GroupsList w={"50vw"} myGroups={sampleChat} chatId={chatId} />
+        <GroupsList w={"50vw"} myGroups={sampleChat}  chatId={chatId} />
       </Drawer>
     </Grid>
   );
 };
 
 const GroupsList = ({ w = "100%", myGroups = [], chatId }) => (
-  <Stack width={w}>
+  <Stack width={w}
+  sx={{
+    
+    backgroundColor: "lightseagreen",
+    height: "100vh",
+    overflow: "auto",
+    overflowX: "hidden",
+     
+    
+  }}
+  >
     {myGroups.length > 0 ? (
       myGroups.map((group) => (
         <GroupListItems group={group} chatId={chatId} key={group._id} />
@@ -370,6 +380,9 @@ const GroupListItems = memo(({ group, chatId }) => {
         spacing={"1rem"}
         padding={"0.7rem"}
         alignItems={"center"}
+
+      
+
       >
         <AvatarCard avatar={avatar}></AvatarCard>
         <Typography>{name}</Typography>

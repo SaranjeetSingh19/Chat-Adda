@@ -27,8 +27,8 @@ const ChatItem = ({
           justifyContent: "space-evenly",
           alignItems: "center",
           padding: "1rem",
-          backgroundColor: sameSender ? "#42A992" : "unset",
-          color: sameSender ? "white" : "unset",
+          backgroundColor: sameSender ? "white" : "unset",
+          color: sameSender ? "black" : "unset",
           position: "relative",
           
         }}
