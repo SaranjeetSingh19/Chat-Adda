@@ -68,7 +68,7 @@ const SideBar = ({ w = "100%" }) => {
       spacing={"3rem"}
       sx={{
         bgcolor: "black",
-        height: "100vh",
+        height: "100%",
       }}
     >
       <Typography
