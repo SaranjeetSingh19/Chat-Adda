@@ -1,6 +1,6 @@
-import mongoose, { Schema, Types, model,   } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
-const schema = new Schema(
+const schema =  new mongoose.Schema(
   {
     name: {
       type: String,
@@ -26,4 +26,8 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-export const Chat = mongoose.models.Chat || model(Chat, schema);
+const Chat = mongoose.model("Chat", schema);
+export default Chat;
+
+
+// export const Chat = mongoose.models.Chat || model(Chat, schema);
