@@ -1,10 +1,10 @@
-import  mongoose , { Schema, Types, model,   } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema(
+const schema = new mongoose.Schema(
   {
     content: String,
     attachments: [
-      { 
+      {
         public_id: {
           type: String,
           required: true,
@@ -17,12 +17,12 @@ const schema = new Schema(
     ],
 
     sender: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     chat: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Chat",
       required: true,
     },
@@ -30,4 +30,6 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-export const Message = mongoose.models.Message || model(Message, schema);
+const Message = mongoose.model("Message", schema);
+
+export default Message;

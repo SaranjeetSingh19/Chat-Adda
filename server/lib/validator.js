@@ -1,0 +1,5 @@
+const registerValidator = () => [
+
+]
+
+export {registerValidator}
