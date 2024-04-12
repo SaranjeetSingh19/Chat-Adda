@@ -12,7 +12,7 @@ const schema =  new mongoose.Schema(
       default: false,
     },
     creator: {
-      type: Types.ObjectId,
+      type: Types.ObjectId, 
       ref: "User",
     },
 

@@ -1,6 +1,6 @@
 import mongoose ,{ Schema, Types, model,   } from "mongoose";
 
-const schema = new Schema(
+const schema = new mongoose.Schema(
   {
     status: {
       type: String,
@@ -13,7 +13,7 @@ const schema = new Schema(
       required: true,
     },
     receiver: {
-      type: Types.ObjectId,
+      type: Types.ObjectId, 
       ref: "User",
       required: true,
     },
@@ -21,4 +21,8 @@ const schema = new Schema(
   { timestamps: true }
 );
 
-export const Request = mongoose.models.Request || model(Request, schema);
+const Request = mongoose.model("Request", schema)
+
+export default Request
+
+// export const Request = mongoose.models.Request || model(Request, schema);

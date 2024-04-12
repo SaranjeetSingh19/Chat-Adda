@@ -14,8 +14,8 @@ const newGroupChat = async (req, res, next) => {
   try {
     const { name, members } = req.body;
 
-    if (members.length < 2)
-      return next(new Error("Group chat at least must have 3 members"));
+    // if (members.length < 2)
+    //   return next(new Error("Group chat at least must have 3 members"));
 
     const allMembers = [...members, req.user];
 
@@ -110,8 +110,8 @@ const addMembers = async (req, res, next) => {
   try {
     const { chatId, members } = req.body;
 
-    if (!members || members.length < 1)
-      return next(new Error("Please provide members 🙄"));
+    // if (!members || members.length < 1)
+    //   return next(new Error("Please provide members 🙄"));
 
     const chat = await Chat.findById(chatId);
 
