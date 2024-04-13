@@ -8,7 +8,7 @@ const validateHandler = (req, res, next) => {
     .map((error) => error.msg)
     .join(",");
 
-  console.log(errors);
+  
 
   if (errors.isEmpty()) return next();
   else next(new Error(errorMessages));
@@ -19,7 +19,6 @@ const registerValidator = () => [
   body("username", "Please enter Username").notEmpty(),
   body("bio", "Please enter Bio").notEmpty(),
   body("password", "Please enter Password").notEmpty(),
-  check("avatar", "Please upload avatar").notEmpty(),
 ];
 
 const loginValidator = () => [
@@ -56,11 +55,6 @@ const leaveGroupValidator = () => [
 
 const sendAttachmentValidator = () => [
   body("chatId", "Please enter Chat ID").notEmpty(),
-  check("files")
-    .notEmpty()
-    .withMessage("Please Upload Attachments")
-    .isArray({ min: 1, max: 5 })
-    .withMessage("Attachments must be between 1-5"),
 ];
 
 const getMessageValidator = () => [
@@ -87,6 +81,10 @@ const acceptRequestValidator = () => [
     .withMessage("Accept must be a boolean"),
 ];
 
+const adminLoginValidator = (req, res, next) => [
+  body("secretKey", "Please enter Secret Key").notEmpty(),
+];
+
 export {
   registerValidator,
   validateHandler,
@@ -101,4 +99,5 @@ export {
   renameValidator,
   sendRequestValidator,
   acceptRequestValidator,
+  adminLoginValidator,
 };

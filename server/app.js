@@ -1,12 +1,12 @@
-import express from "express";
-import userRoute from "./routes/user.routes.js";
-import charRoute from "./routes/chat.routes.js";
-import { connectDb } from "./utils/features.js";
-import dotenv from "dotenv";
-import { errorMiddleWare } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
-import { createUser } from "./seeders/user.seeders.js";
-import { createGroupChats, createMessagesInAChat, createSingleChats } from "./seeders/chat.seeder.js";
+import dotenv from "dotenv";
+import express from "express";
+import { errorMiddleWare } from "./middlewares/error.js";
+import charRoute from "./routes/chat.routes.js";
+import userRoute from "./routes/user.routes.js";
+import adminRoute from "./routes/admin.routes.js";
+
+import { connectDb } from "./utils/features.js";
 
 dotenv.config({
   path: "./.env",
@@ -14,10 +14,11 @@ dotenv.config({
 
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
+const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
 
 connectDb(mongoURI);
 
-// createUser(10) 
+// createUser(10)
 // createSingleChats(10)
 // createGroupChats(10)
 // createMessagesInAChat("661784e36e10e96f86b5d69d", 50)
@@ -31,6 +32,7 @@ app.use(cookieParser());
 
 app.use("/user", userRoute);
 app.use("/chat", charRoute);
+app.use("/admin", adminRoute);
 
 app.get("/", (req, res) => {
   res.send("From home route");
@@ -39,5 +41,7 @@ app.get("/", (req, res) => {
 app.use(errorMiddleWare);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port} in ${envMode} mode`);
 });
+
+export { mongoURI, envMode, port };

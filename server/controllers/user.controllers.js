@@ -1,17 +1,19 @@
 import { compare } from "bcrypt";
-import User from "../models/user.models.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
-import { chatIdValidator } from "../lib/validator.js";
-import Chat from "../models/chat.models.js";
-import Request from "../models/request.models.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
+import Chat from "../models/chat.models.js";
+import Request from "../models/request.models.js";
+import User from "../models/user.models.js";
+import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 
 const newUsers = async (req, res, next) => {
   try {
     const { name, username, password, bio } = req.body;
 
-    console.log(req.body);
+    const file = req.file;
+
+    
+    if (!file) return next(new Error("Please Upload Avatar"));
 
     const avatar = {
       public_id: "randomPublicId",
@@ -30,7 +32,7 @@ const newUsers = async (req, res, next) => {
   } catch (error) {
     return res.status(404).json({
       success: false,
-      message: error.message,
+      message: error.code === 11000 ? "User already exist" : error.message,
     });
   }
 };
@@ -154,7 +156,7 @@ const acceptFriendRequest = async (req, res, next) => {
       .populate("sender", "name")
       .populate("receiver", "name");
 
-    console.log(request);
+    
 
     if (!request) return next(new Error("Request not found!"));
 
@@ -226,50 +228,53 @@ const getMyFriends = async (req, res, next) => {
   try {
     const chatId = req.query.chatId;
 
-  const chats = await Chat.find({
-    members: req.user,
-    groupChat: false,
-  }).populate("members", "name avatar");
+    const chats = await Chat.find({
+      members: req.user,
+      groupChat: false,
+    }).populate("members", "name avatar");
 
-  const friends = chats.map(({ members }) => {
-    const otherUser = getOtherMember(members, req.user);
+    const friends = chats.map(({ members }) => {
+      const otherUser = getOtherMember(members, req.user);
 
-    return {
-      _id: otherUser._id,
-      name: otherUser.name,
-      avatar: otherUser.avatar.url,
-    };
-  });
-
-  if (chatId) {
-    const chat = await Chat.findById(chatId);
-
-    const availableFriends = friends.filter(
-      (friend) => !chat.members.includes(friend._id)
-    );
-    return res.status(200).json({
-      success: true,
-      friends: availableFriends,
+      return {
+        _id: otherUser._id,
+        name: otherUser.name,
+        avatar: otherUser.avatar.url,
+      };
     });
-  } else {
-    return res.status(200).json({
-      success: true,
-      friends,
-    });
-  }
+
+    if (chatId) {
+      const chat = await Chat.findById(chatId);
+
+      const availableFriends = friends.filter(
+        (friend) => !chat.members.includes(friend._id)
+      );
+      return res.status(200).json({
+        success: true,
+        friends: availableFriends,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        friends,
+      });
+    }
   } catch (error) {
-   console.log(error); 
+    return res.status(404).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 export {
-  login,
-  newUsers,
-  getMyProfile,
-  logout,
-  searchUser,
   acceptFriendRequest,
-  sendFriendRequest,
-  getMyNotifications,
   getMyFriends,
+  getMyNotifications,
+  getMyProfile,
+  login,
+  logout,
+  newUsers,
+  searchUser,
+  sendFriendRequest,
 };

@@ -1,5 +1,3 @@
-import Chat from "../models/chat.models.js";
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
 import {
   ALERTS,
   NEW_ATTACHMENT,
@@ -7,8 +5,10 @@ import {
   REFETCH_CHATS,
 } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
-import User from "../models/user.models.js";
+import Chat from "../models/chat.models.js";
 import Message from "../models/message.models.js";
+import User from "../models/user.models.js";
+import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
 
 const newGroupChat = async (req, res, next) => {
   try {
@@ -153,7 +153,7 @@ const addMembers = async (req, res, next) => {
       message: "Members added successfully",
     });
   } catch (error) {
-    console.log("ERROR:=", error);
+    
     return res.status(404).json({
       success: false,
       message: error.message,
@@ -259,8 +259,14 @@ const leaveGroup = async (req, res, next) => {
 };
 
 const sendAttachments = async (req, res, next) => {
-  try {
+   try {
     const { chatId } = req.body;
+
+    const files = req.files || [];
+
+    if (files.length < 1) return next(new Error("Please Upload Attachments"));
+
+    if (files.length >  5) return next(new Error("Files can't be more than 5"));
 
     const [chat, me] = await Promise.all([
       Chat.findById(chatId),
@@ -268,8 +274,6 @@ const sendAttachments = async (req, res, next) => {
     ]);
 
     if (!chat) return next(new Error("Chat not found!!!"));
-
-    const files = req.files || [];
 
     if (files.length < 1) return next(new Error("Please provide attachments"));
 
@@ -305,12 +309,12 @@ const sendAttachments = async (req, res, next) => {
       success: true,
       message,
     });
-  } catch (error) {
+   } catch (error) {
     return res.status(404).json({
       success: false,
       message: error.message,
     });
-  }
+   }
 };
 
 const getChatDetails = async (req, res, next) => {
@@ -345,7 +349,8 @@ const getChatDetails = async (req, res, next) => {
   } catch (error) {
     return res.status(404).json({
       success: false,
-      message: error.message,
+      message: process.env.NODE_ENV.trim() === "DEVELOPMENT" ? error.message : "Invalid Path ID",
+      // message: error.path
     });
   }
 };
@@ -460,7 +465,6 @@ const getMessages = async (req, res, next) => {
       totalPages,
     });
   } catch (error) {
-
     return res.status(404).json({
       success: false,
       message: error.message,
@@ -469,15 +473,15 @@ const getMessages = async (req, res, next) => {
 };
 
 export {
-  newGroupChat,
+  addMembers,
+  deleteChat,
+  getChatDetails,
+  getMessages,
   getMyChats,
   getMyGroups,
-  addMembers,
-  removeMembers,
   leaveGroup,
-  sendAttachments,
-  getChatDetails,
+  newGroupChat,
+  removeMembers,
   renameGroup,
-  deleteChat,
-  getMessages,
+  sendAttachments,
 };
