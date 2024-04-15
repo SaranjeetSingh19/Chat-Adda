@@ -14,6 +14,12 @@ import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { useFileHandler, useInputValidation } from "6pp";
 import { usernameValidator } from "../utils/validators";
+import { userExists } from "../redux/reducers/auth";
+
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { server } from "../constants/config";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,17 +31,69 @@ const Login = () => {
   const password = useInputValidation("");
   const bio = useInputValidation("");
 
+  const dispatch = useDispatch();
+
   const avatar = useFileHandler("single"); // coz, we only want to select single file/profile/avatar photo
 
   console.log(username.value);
 
-  const handleSignUp = (e)  => {
-    e.preventDefault()
-  }
+  const handleSignUp = async (e) => {
+    e.preventDefault();
 
-  const handleLogin = (e)  => {
-    e.preventDefault()
-  }
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("name", name.value);
+    formData.append("bio", bio.value);
+    formData.append("username", username.value);
+    formData.append("password", password.value);
+
+    const config = {
+      withCredentials: true,
+      header: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/new`,
+        formData,
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.log(error.response?.data?.message);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          usermame: username.value,
+          password: password.value,
+        },
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.log(error);
+    }
+  };
 
   return (
     <Box sx={{ backgroundColor: "#ADD8E6  " }}>
@@ -64,7 +122,7 @@ const Login = () => {
           {isLogin ? (
             <>
               <Typography variant="h5">Login</Typography>
-              <form    onSubmit={handleLogin}>
+              <form onSubmit={handleLogin}>
                 <TextField
                   required
                   fullWidth
@@ -73,8 +131,6 @@ const Login = () => {
                   variant="outlined"
                   value={username.value}
                   onChange={username.changeHandler}
-             
-
                 />
                 {username.error && (
                   <Typography color="error" variant="caption">
@@ -126,7 +182,6 @@ const Login = () => {
                 }}
                 onSubmit={handleSignUp}
               >
-
                 <Stack position={"relative"} width={"10rem"} marginLeft={"8vw"}>
                   <Avatar
                     sx={{
@@ -159,9 +214,9 @@ const Login = () => {
 
                 {avatar.error && (
                   <Typography
-                  marginLeft={"8vw"}
-                  marginTop={"2vh"}
-                  marginBottom={"-1vh"}
+                    marginLeft={"8vw"}
+                    marginTop={"2vh"}
+                    marginBottom={"-1vh"}
                     color="error"
                     variant="caption"
                     width={"fit-content"}

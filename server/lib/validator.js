@@ -22,8 +22,8 @@ const registerValidator = () => [
 ];
 
 const loginValidator = () => [
-  body("username", "Please enter Username").notEmpty(),
-  body("password", "Please enter Password").notEmpty(),
+  body("username", "Invalid Username or Password").notEmpty(),
+  body("password", "Invalid Username or Password").notEmpty(),
 ];
 
 const newGroupValidator = () => [

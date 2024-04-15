@@ -4,7 +4,7 @@ import { getOtherMember } from "../lib/helper.js";
 import Chat from "../models/chat.models.js";
 import Request from "../models/request.models.js";
 import User from "../models/user.models.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary } from "../utils/features.js";
 
 const newUsers = async (req, res, next) => {
   try {
@@ -12,12 +12,14 @@ const newUsers = async (req, res, next) => {
 
     const file = req.file;
 
-    
     if (!file) return next(new Error("Please Upload Avatar"));
 
+    const result = await uploadFilesToCloudinary([file])
+    //File will get uploaded to cloudinary through above function
+
     const avatar = {
-      public_id: "randomPublicId",
-      url: "randomUrl",
+      public_id: result[0].public._id ,
+      url: result[0].url,
     };
 
     const user = await User.create({
@@ -155,8 +157,6 @@ const acceptFriendRequest = async (req, res, next) => {
     const request = await Request.findById(requestId)
       .populate("sender", "name")
       .populate("receiver", "name");
-
-    
 
     if (!request) return next(new Error("Request not found!"));
 
