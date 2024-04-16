@@ -40,8 +40,7 @@ const emitEvent = (req, res) => {
 const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(
-        // Cloudinary method
+      cloudinary.uploader.upload( // Cloudinary method
         getBase64(file),
         {
           resouce_type: "auto",

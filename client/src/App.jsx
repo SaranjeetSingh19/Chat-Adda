@@ -5,8 +5,8 @@ import Loader from "./components/layout/Loader";
 import axios from "axios";
 import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
-import { userNotExits } from "./redux/reducers/auth";
-import {Toaster} from "react-hot-toast"
+import { userExists, userNotExists } from "./redux/reducers/auth";
+import { Toaster } from "react-hot-toast";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -25,17 +25,20 @@ const UserManagement = lazy(() => import("./pages/Admin/UserManagement"));
 // const user = true;
 
 const App = () => {
-  const {user, loader} = useSelector((state) => state.auth);
+  const { user, loader } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
+  
   useEffect(() => {
-    console.log(server);
     axios
-      .get(`${server}/api/v1/user/me`)
-      .then((res) => console.log(res))
-      .catch((err) => dispatch(userNotExits()));
+      .get(`${server}/api/v1/user/me`, { withCredentials: true })
+      .then(({data}) => {
+        console.log(data);
+        dispatch(userExists(data.user))
+      }).catch((err) => dispatch(userNotExists()));
   }, [dispatch]);
+
 
   return loader ? (
     <Loader />

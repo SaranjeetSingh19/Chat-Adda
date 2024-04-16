@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module", 
+  "type": "module",
   "scripts": {
     "start": "SET NODE_ENV=PRODUCTION && node app.js",
     "dev": "SET NODE_ENV=DEVELOPMENT && nodemon app.js"
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.1.0",
     "cookie-parser": "^1.4.6",

@@ -25,8 +25,11 @@ const app = express.Router();
 app.post("/new", singleAvatar, registerValidator(), validateHandler, newUsers);
 app.post("/login", loginValidator(), validateHandler, login);
 
+
 // After here user must be logged in
-app.use(isAuthenticated); //Automatically all the routes which will declare after this have this middleware.
+app.use(isAuthenticated); 
+//Automatically all the routes which will declare after this have this middleware.
+
 
 app.get("/me", getMyProfile);
 

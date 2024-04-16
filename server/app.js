@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import cors from "cors";
-import {v2 as cloudinary} from "cloudinary"
+import { v2 as cloudinary } from "cloudinary";
 
 import { connectDb } from "./utils/features.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
@@ -30,8 +30,8 @@ connectDb(mongoURI);
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-})
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // createUser(10)
 // createSingleChats(10)
@@ -50,8 +50,9 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:4173",
-      process.env.CLIENT_URL, 
+      process.env.CLIENT_URL,
     ],
+
     credentials: true,
   })
 );
@@ -69,7 +70,10 @@ io.use((socket, next) => {});
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
 
-  const user = { _id: "rnDOM iD", name: "Bonkii" };
+  const user = {
+    _id: "rnDOM iD",
+    name: "Bonkii",
+  };
 
   userSocketIDs.set(user._id.toString(), socket.id); // By this we will get to know that which user id (USER) is connected with which socket id
   console.log(userSocketIDs);

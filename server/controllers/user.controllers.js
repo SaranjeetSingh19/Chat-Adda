@@ -18,7 +18,7 @@ const newUsers = async (req, res, next) => {
     //File will get uploaded to cloudinary through above function
 
     const avatar = {
-      public_id: result[0].public._id ,
+      public_id: result[0].public_id ,
       url: result[0].url,
     };
 
@@ -32,6 +32,7 @@ const newUsers = async (req, res, next) => {
 
     sendToken(res, user, 201, "User Created!");
   } catch (error) {
+    console.log(error);
     return res.status(404).json({
       success: false,
       message: error.code === 11000 ? "User already exist" : error.message,
@@ -44,14 +45,15 @@ const login = async (req, res, next) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username }).select("+password");
-
-    if (!user) return next(new Error("Invalid Username"));
-
+  
+    if (!user) return next(new Error("Invalid Username or Password 1!"));
+  
     const isMatch = await compare(password, user.password);
-
-    if (!isMatch) return next(new Error("Invalid Password"));
-
-    sendToken(res, user, 200, `Welcome back ${user.name}`);
+  
+    if (!isMatch)
+    return next(new Error("Invalid Username or Password 2!"));
+  
+    sendToken(res, user, 200, `Welcome Back, ${user.name}`);
   } catch (error) {
     return res.status(404).json({
       success: false,
@@ -67,7 +69,7 @@ const getMyProfile = async (req, res, next) => {
 
   res.status(201).json({
     success: true,
-    message: user,
+    user: user,
   });
 };
 

@@ -11,12 +11,13 @@ import {
   Typography,
 } from "@mui/material";
 import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
+
+import axios from "axios";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { useFileHandler, useInputValidation } from "6pp";
 import { usernameValidator } from "../utils/validators";
 import { userExists } from "../redux/reducers/auth";
 
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { server } from "../constants/config";
@@ -35,7 +36,36 @@ const Login = () => {
 
   const avatar = useFileHandler("single"); // coz, we only want to select single file/profile/avatar photo
 
-  console.log(username.value);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+ 
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+ 
+      dispatch(userExists(data.user));
+      toast.success(data.message);
+    } 
+    catch (error)
+     {
+       toast.error(error?.response?.data?.message || "Something went wrong");
+       console.log(error);
+     }
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -49,48 +79,23 @@ const Login = () => {
 
     const config = {
       withCredentials: true,
-      header: {
+      headers: {
         "Content-Type": "multipart/form-data",
       },
     };
 
     try {
+      console.log(server);
       const { data } = await axios.post(
         `${server}/api/v1/user/new`,
         formData,
         config
       );
-      dispatch(userExists(true));
+      dispatch(userExists(data.user));
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
       console.log(error.response?.data?.message);
-    }
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    const config = {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      const { data } = await axios.post(
-        `${server}/api/v1/user/login`,
-        {
-          usermame: username.value,
-          password: password.value,
-        },
-        config
-      );
-      dispatch(userExists(true));
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
       console.log(error);
     }
   };
@@ -229,8 +234,7 @@ const Login = () => {
 
                 <TextField
                   required
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   label="Name"
                   margin="normal"
                   variant="outlined"
@@ -240,8 +244,7 @@ const Login = () => {
 
                 <TextField
                   required
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   label="Username"
                   margin="normal"
                   variant="outlined"
@@ -253,8 +256,7 @@ const Login = () => {
                 />
                 <TextField
                   required
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   label="Bio"
                   margin="normal"
                   value={bio.value}
@@ -266,8 +268,7 @@ const Login = () => {
                 />
                 <TextField
                   required
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   label="Password"
                   variant="outlined"
                   type="password"
@@ -281,8 +282,7 @@ const Login = () => {
                   type="submit"
                   color="primary"
                   variant="contained"
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   sx={{ marginTop: "1rem" }}
                 >
                   Sign up
@@ -293,8 +293,7 @@ const Login = () => {
                 <Button
                   sx={{ marginTop: "2px" }}
                   variant="text"
-                  style={{ width: "300px" }}
-                  InputProps={{ style: { height: "50px" } }} // Targets the input element
+                  style={{ width: "300px", height: "50px" }} // Targets the input element
                   onClick={toggleLogin}
                 >
                   {" "}
