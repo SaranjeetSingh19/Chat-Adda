@@ -1,5 +1,4 @@
 import express from "express";
-import { isAuthenticated } from "../middlewares/auth.js";
 import {
   addMembers,
   deleteChat,
@@ -13,18 +12,17 @@ import {
   renameGroup,
   sendAttachments,
 } from "../controllers/chat.controllers.js";
-import { attachmentMulter } from "../middlewares/multer.js";
 import {
   addMemberValidator,
   chatIdValidator,
-  getMessageValidator,
-  leaveGroupValidator,
   newGroupValidator,
   removeMemberValidator,
   renameValidator,
   sendAttachmentValidator,
-  validateHandler,
+  validateHandler
 } from "../lib/validator.js";
+import { isAuthenticated } from "../middlewares/auth.js";
+import { attachmentMulter } from "../middlewares/multer.js";
 
 const app = express.Router();
 

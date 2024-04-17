@@ -22,29 +22,26 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../constants/config";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "../../redux/reducers/auth";
+import { setIsMobile, setIsSearch } from "../../redux/reducers/misc";
 
-const SearchDialog = lazy(() => import("../specific/Search"))
-const NotificationsDialog = lazy(() => import("../specific/Notifications"))
-const NewGroupDialog = lazy(() => import("../specific/NewGroup"))
-
+const SearchDialog = lazy(() => import("../specific/Search"));
+const NotificationsDialog = lazy(() => import("../specific/Notifications"));
+const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const [isMobile, setIsMobile] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
+  const { isSearch } = useSelector((state) => state.misc);
+
   const [isNewGroup, setIsNewGroup] = useState(false);
   const [isNotification, setIsNotification] = useState(false);
 
-  const handleMobile = () => {
-    setIsMobile((prev) => !prev);
-  };
-  const openSearch = () => {
-    setIsSearch((prev) => !prev);
-  };
+  const handleMobile = () => dispatch(setIsMobile(true));
+  const openSearch = () => dispatch(setIsSearch(true));
+
   const openNewGroup = () => {
     setIsNewGroup((prev) => !prev);
   };
@@ -55,13 +52,13 @@ const Header = () => {
   const handleLogout = async () => {
     console.log("Logout button");
     try {
-      const {data} = await axios.get(`${server}/api/v1/user/logout`, {
-        withCredentials: true
-      })
-      dispatch(userNotExists())
-      toast.success(data.message)
+      const { data } = await axios.get(`${server}/api/v1/user/logout`, {
+        withCredentials: true,
+      });
+      dispatch(userNotExists());
+      toast.success(data.message);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong!") 
+      toast.error(error?.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -71,7 +68,7 @@ const Header = () => {
         <AppBar
           position="static"
           sx={{
-            bgcolor:" #9EE5D6",
+            bgcolor: " #9EE5D6",
           }}
         >
           <Toolbar>
@@ -137,18 +134,14 @@ const Header = () => {
         </Suspense>
       )}
 
-
       {isNotification && (
-              <Suspense fallback={<Backdrop open />}>
-
+        <Suspense fallback={<Backdrop open />}>
           <NotificationsDialog />
         </Suspense>
       )}
 
-
       {isNewGroup && (
-             <Suspense fallback={<Backdrop open />}>
-
+        <Suspense fallback={<Backdrop open />}>
           <NewGroupDialog />
         </Suspense>
       )}

@@ -1,11 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./reducers/auth";
+import api from "./api/api";
+import miscSlice from "./reducers/misc";
 
 const store = configureStore({
   reducer: {
     [authSlice.name]: authSlice.reducer,
-    // We can aslo name it as "auth", if we want the name as static not dynamic (auth: authSlice.reducer)
+    [miscSlice.name]: miscSlice.reducer,
+    [api.reducerPath]: api.reducer,
   },
+  middleware: (mid) => [...mid(), api.middleware],
 });
 
 export default store;
