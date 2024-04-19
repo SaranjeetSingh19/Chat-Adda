@@ -15,6 +15,7 @@ import { connectDb } from "./utils/features.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import Message from "./models/message.models.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 dotenv.config({
   path: "./.env",
@@ -39,7 +40,17 @@ cloudinary.config({
 // createMessagesInAChat("661784e36e10e96f86b5d69d", 50)
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      process.env.CLIENT_URL,
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  },
+});
 
 //Using middlewares
 app.use(express.json());
@@ -52,7 +63,7 @@ app.use(
       "http://localhost:4173",
       process.env.CLIENT_URL,
     ],
-
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
@@ -65,20 +76,23 @@ app.get("/", (req, res) => {
   res.send("From home route");
 });
 
-io.use((socket, next) => {});
+
+io.use((socket, next) => {
+  cookieParser()(socket.request, socket.request.res,
+ async (err) => await socketAuthenticator(err, socket, next)
+  );
+});
+
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
-
-  const user = {
-    _id: "rnDOM iD",
-    name: "Bonkii",
-  };
+ 
+  const user = socket.user
+ 
 
   userSocketIDs.set(user._id.toString(), socket.id); // By this we will get to know that which user id (USER) is connected with which socket id
-  console.log(userSocketIDs);
+  console.log("userSocketIDs:" ,userSocketIDs);
 
-  socket.on(NEW_MESSAGE, async ({ members, chatId, message }) => {
+  socket.on(NEW_MESSAGE, async ({  chatId, members, message }) => {
     // this is listening the request from client
     const messageForRealTime = {
       content: message,

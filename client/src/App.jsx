@@ -7,6 +7,7 @@ import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
 import { userExists, userNotExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
+import { SocketProvider } from "./socket";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -29,16 +30,14 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
     axios
       .get(`${server}/api/v1/user/me`, { withCredentials: true })
-      .then(({data}) => {
-        console.log(data);
-        dispatch(userExists(data.user))
-      }).catch((err) => dispatch(userNotExists()));
+      .then(({ data }) => {
+        dispatch(userExists(data.user));
+      })
+      .catch((err) => dispatch(userNotExists()));
   }, [dispatch]);
-
 
   return loader ? (
     <Loader />
@@ -46,8 +45,13 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route element={<ProtectedRoute user={user} />}>
-            {/* This normal route will protect all routes that will get wrapped inside it */}
+          <Route
+            element={
+              <SocketProvider>
+                <ProtectedRoute user={user} />
+              </SocketProvider>
+            }
+          >
             <Route path="/" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Groups />} />

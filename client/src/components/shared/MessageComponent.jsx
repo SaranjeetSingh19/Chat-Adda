@@ -7,9 +7,12 @@ import RenderAttachment from "./RenderAttachment";
 const MessageComponent = ({ message, user }) => {
   const { sender, content, attachments = [], createdAt } = message;
 
-  console.log(attachments);
+  
 
   const sameSender = sender?._id === user?._id; // if sender & user id both are same
+
+ 
+
 
   const timeAgo = moment(createdAt).fromNow();
 

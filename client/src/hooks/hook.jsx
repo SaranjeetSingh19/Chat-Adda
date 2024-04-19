@@ -6,7 +6,10 @@ const useErrors = (errors = []) => {
     errors.forEach(({ isError, error, fallback }) => {
       if (isError) {
         if (fallback) fallback();
-        else toast.error(error?.data?.message || "Something went wrong");
+        else {
+          toast.error(error?.data?.message || "Something went wrong");
+          console.log(error);
+        }
       }
     });
   }, [errors]);
@@ -38,10 +41,25 @@ const useAsyncMutation = (mutationHook) => {
       console.log(error);
       toast.error("Kuch to gadbad hai", { id: toastId });
     } finally {
-        setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  return [executeMutation,isLoading,data]
+  };
+  return [executeMutation, isLoading, data];
 };
 
-export { useErrors, useAsyncMutation };
+const useSocketEvents = async (socket, handlers) => {
+  useEffect(()=> {
+    Object.entries(handlers).forEach(([event, handler]) => {
+      socket.on(event, handler)
+    })
+
+    return () => {
+      Object.entries(handlers).forEach(([event, handler]) => {
+        socket.off(event, handler)
+      })
+    }
+
+  }, [socket, handlers])
+}
+
+export { useErrors, useAsyncMutation, useSocketEvents };

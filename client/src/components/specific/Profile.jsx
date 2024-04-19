@@ -5,12 +5,14 @@ import {
   CalendarMonth as CalendarIcon,
   AlternateEmail as UsernameIcon,
 } from "@mui/icons-material";
-import moment from "moment"
+import moment from "moment";
+import { transformImage } from "../../lib/features";
 
-const Profile = () => {
+const Profile = ({ user }) => {
   return (
-    <Stack  spacing={"2rem"} direction={"column"} alignItems={"center"}>
+    <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar
+        src={transformImage(user?.avatar?.url)}
         sx={{
           width: 120,
           height: 120,
@@ -19,10 +21,18 @@ const Profile = () => {
           border: "5px solid #CCCDFF",
         }}
       />
-      <Profilecard heading={"Bio"} text={"mah lyf mah rulexx babiee 😎"} />
-      <Profilecard heading={"Username"} text={"Saran_.19"} Icon={<UsernameIcon />} />
-      <Profilecard heading={"Name"} text={"Saran Singh"} Icon={<FaceIcon /> }/>
-      <Profilecard heading={"Joined"} text={moment("2024-03-26T18:30:00.000Z").fromNow()} Icon={<CalendarIcon /> }/>
+      <Profilecard heading={"Bio"} text={user?.bio} />
+      <Profilecard
+        heading={"Username"}
+        text={user?.username}
+        Icon={<UsernameIcon />}
+      />
+      <Profilecard heading={"Name"} text={user?.name} Icon={<FaceIcon />} />
+      <Profilecard
+        heading={"Joined"}
+        text={moment(user?.createdAt).fromNow()}
+        Icon={<CalendarIcon />}
+      />
     </Stack>
   );
 };
@@ -41,10 +51,9 @@ export const Profilecard = ({ text, Icon, heading }) => {
       {Icon && Icon}
 
       <Stack>
-        <Typography  
-            color={"#42A992"}
-        
-        variant="body1">{text}</Typography>
+        <Typography color={"#42A992"} variant="body1">
+          {text}
+        </Typography>
         <Typography variant="caption" color={"#6F2764"}>
           {heading}
         </Typography>
