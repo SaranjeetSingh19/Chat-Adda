@@ -1,16 +1,18 @@
-import React from "react";
-import Header from "./Header";
-import Title from "../shared/Title";
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import ChatList from "../specific/ChatList";
-import { sampleChat } from "../constants/sampleData";
-import { useParams } from "react-router-dom";
-import Profile from "../specific/Profile";
-import { useMyChatsQuery } from "../../redux/api/api";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useErrors, useSocketEvents } from "../../hooks/hook";
+import { useMyChatsQuery } from "../../redux/api/api";
 import { setIsMobile } from "../../redux/reducers/misc";
-import { useErrors } from "../../hooks/hook";
 import { getSocket } from "../../socket";
+import Title from "../shared/Title";
+import ChatList from "../specific/ChatList";
+import Profile from "../specific/Profile";
+import Header from "./Header";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../constants/events";
+import { useCallback } from "react";
+import { incrementNotificationCount } from "../../redux/reducers/chat";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -18,26 +20,35 @@ const AppLayout = () => (WrappedComponent) => {
     const dispatch = useDispatch();
     const chatId = params.chatId;
 
-    const socket = getSocket()
-
- 
+    const socket = getSocket();
 
     const { isMobile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
-    useErrors([{isError, error}])
-
- 
+    useErrors([{ isError, error }]);
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();
       console.log("Delete chat", e, _id, groupChat);
     };
 
-    const handleMobileClose = () => dispatch(setIsMobile(false))
+    const handleMobileClose = () => dispatch(setIsMobile(false));
 
+
+    const newMessageAlertHandler = useCallback(() => {}, [])
+
+    const newRequestHandler = useCallback(() => {
+      dispatch(incrementNotificationCount())
+    }, [dispatch])
+
+    const eventHandlers = {
+      [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
+      [NEW_REQUEST]: newRequestHandler,
+    };
+
+    useSocketEvents(socket, eventHandlers);
 
     return (
       <div>
@@ -45,16 +56,17 @@ const AppLayout = () => (WrappedComponent) => {
         <Header />
 
         {isLoading ? (
-              <Skeleton />
-            ) : (
-              <Drawer open={isMobile} onClose={handleMobileClose}>
-              <ChatList w="70vw"
-                chats={data?.message} // 6pp used data.chats but i have declared message instead of chats
-                chatId={chatId}
-                handleDeleteChat={handleDeleteChat}
-              />
-              </Drawer>
-            )}
+          <Skeleton />
+        ) : (
+          <Drawer open={isMobile} onClose={handleMobileClose}>
+            <ChatList
+              w="70vw"
+              chats={data?.message} // 6pp used data.chats but i have declared message instead of chats
+              chatId={chatId}
+              handleDeleteChat={handleDeleteChat}
+            />
+          </Drawer>
+        )}
 
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
@@ -96,7 +108,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{ display: { xs: "none", sm: "block" } }}
             padding="2rem"
           >
-            <Profile user={user}/>
+            <Profile user={user} />
           </Grid>
         </Grid>
       </div>

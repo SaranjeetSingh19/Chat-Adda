@@ -13,13 +13,17 @@ import { NEW_MESSAGE } from "../components/constants/events";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/hook";
 import { useInfiniteScrollTop } from "6pp";
+import { useDispatch } from "react-redux";
+import { setIsFileMenu } from "../redux/reducers/misc";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const fileMenuRef = useRef(null);
+  const dispatch = useDispatch();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
   const [page, setPage] = useState(1);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId }); // hook will not get called (skip) if chatId doesn't exist
@@ -39,13 +43,9 @@ const Chat = ({ chatId, user }) => {
     { isError: oldMsgsChunk.isError, error: oldMsgsChunk.error },
   ];
 
-  console.log(oldMsgsChunk?.data);
-
   const members = chatDetails?.data?.chat?.members;
 
   const socket = getSocket();
-
-  console.log("oldMessages :=", oldMessages);
 
   const allMessages = [...oldMessages, ...messages];
 
@@ -56,6 +56,11 @@ const Chat = ({ chatId, user }) => {
     // This(emit) will send(trigger) message through FORM
     socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
+  };
+
+  const openFileHandler = (e) => {
+    dispatch(setIsFileMenu(true));
+    setFileMenuAnchor(e.currentTarget);
   };
 
   const newMessageHandler = useCallback((data) => {
@@ -106,6 +111,7 @@ const Chat = ({ chatId, user }) => {
               rotate: "30deg",
             }}
             ref={fileMenuRef}
+            onClick={openFileHandler}
           >
             <AttachFileIcon />
           </IconButton>
@@ -133,7 +139,7 @@ const Chat = ({ chatId, user }) => {
         </Stack>
       </form>
 
-      <FileMenu />
+      <FileMenu anchorEl={fileMenuAnchor} chatId={chatId} />
     </>
   );
 };
