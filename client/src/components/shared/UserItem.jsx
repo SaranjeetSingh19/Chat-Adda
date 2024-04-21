@@ -3,7 +3,13 @@ import { Avatar, IconButton, ListItem, Stack, Typography } from "@mui/material";
 import React, { memo } from "react";
 import { transformImage } from "../../lib/features";
 
-const UserItem = ({ user, handler, handlerIsLoading, isAdded=false, styling={}}) => {
+const UserItem = ({
+  user,
+  handler,
+  handlerIsLoading,
+  isAdded = false,
+  styling = {},
+}) => {
   const { name, _id, avatar } = user;
   return (
     <ListItem>
@@ -15,6 +21,7 @@ const UserItem = ({ user, handler, handlerIsLoading, isAdded=false, styling={}})
         {...styling}
       >
         <Avatar src={transformImage(avatar)} />
+
         <Typography
           variant="body1"
           sx={{
@@ -29,15 +36,18 @@ const UserItem = ({ user, handler, handlerIsLoading, isAdded=false, styling={}})
         >
           {name}
         </Typography>
-        <IconButton size="small" sx={{
-            "&:hover" :{
-                bgcolor: "#B167C2"
+        <IconButton
+          size="small"
+          sx={{
+            "&:hover": {
+              bgcolor: "#B167C2",
             },
-            bgcolor: isAdded ? "error.main" : "primary.main"
-        }}
-         
-        onClick={() => handler(_id)} disabled={handlerIsLoading}>
-          { isAdded ? <RemoveIcon/> : <AddIcon />}
+            bgcolor: isAdded ? "error.main" : "primary.main",
+          }}
+          onClick={() => handler(_id)}
+          disabled={handlerIsLoading}
+        >
+          {isAdded ? <RemoveIcon /> : <AddIcon />}
         </IconButton>
       </Stack>
     </ListItem>

@@ -12,7 +12,7 @@ import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 
 import { connectDb } from "./utils/features.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
 import Message from "./models/message.models.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
@@ -130,6 +130,16 @@ io.on("connection", (socket) => {
       console.log("Error while saving in msgs in DB:", error);
     }
   });
+
+  socket.on(START_TYPING, ({chatId, members}) => {
+    const memberSockets = getSockets(members)
+    socket.to(memberSockets).emit(START_TYPING, {chatId}) 
+  })
+  
+  socket.on(STOP_TYPING, ({chatId, members}) => {
+    const memberSockets = getSockets(members)
+    socket.to(memberSockets).emit(STOP_TYPING, {chatId}) 
+  })
 
   socket.on("disconnect", () => {
     console.log("user Disconnected");

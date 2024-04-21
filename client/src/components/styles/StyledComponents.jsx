@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { Skeleton, keyframes, styled } from "@mui/material";
 import { blue, red } from "@mui/material/colors";
 import { Link as LinkComponent } from "react-router-dom";
 
@@ -57,3 +57,13 @@ export const CurveButton = styled("button")`
     background-color: rgba(0, 0, 0, 0.8);
   }
 `;
+
+const bouncingWave = keyframes`
+0% {transform: scale(1); }
+50% {transform: scale(1.5); }
+100% {transform: scale(1); }
+`;
+
+export const BouncingSkeleton = styled(Skeleton)(() => ({
+  animation: `${bouncingWave} 1s infinite`
+}));  // Through GPT
