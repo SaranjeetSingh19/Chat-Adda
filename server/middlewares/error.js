@@ -8,11 +8,16 @@ const errorMiddleWare = (err, req, res, next) => {
   //     err.statusCode = 400;
   //   }
 
-  return res.status(err.statuscode).json({
+  const response = {
     success: false,
- 
     message: err.message,
-  });
+  };
+
+  if (envMode === "DEVELOPMENT") {
+    response.error = err;
+  }
+
+  return res.status(err.statuscode).json(response);
 };
 
 export { errorMiddleWare };

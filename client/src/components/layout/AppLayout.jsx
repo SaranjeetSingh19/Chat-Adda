@@ -1,7 +1,7 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { setIsMobile } from "../../redux/reducers/misc";
@@ -10,7 +10,7 @@ import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../constants/events";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from "../constants/events";
 import { useCallback } from "react";
 import {
   incrementNotificationCount,
@@ -23,6 +23,7 @@ const AppLayout = () => (WrappedComponent) => {
     const params = useParams();
     const dispatch = useDispatch();
     const chatId = params.chatId;
+    const navigate = useNavigate()
 
     const socket = getSocket();
 
@@ -45,21 +46,26 @@ const AppLayout = () => (WrappedComponent) => {
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
-    const newMessageAlertHandler = useCallback(
+    const newMessageAlertListener = useCallback(
       (data) => {
         if (data.chatId === chatId) return;
         dispatch(setNewMessagesAlert(data));
-      },
-      [chatId]
+      },[chatId]
     );
 
-    const newRequestHandler = useCallback(() => {
+    const newRequestListener = useCallback(() => {
       dispatch(incrementNotificationCount());
     }, [dispatch]);
 
+    const refetchListener = useCallback(() => {
+      refetch()
+      navigate("/")
+    }, [refetch])
+
     const eventHandlers = {
-      [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
-      [NEW_REQUEST]: newRequestHandler,
+      [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener
     };
 
     useSocketEvents(socket, eventHandlers);

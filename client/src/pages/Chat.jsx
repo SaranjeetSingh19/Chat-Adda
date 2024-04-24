@@ -22,11 +22,13 @@ import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { removeNewMessageAlert } from "../redux/reducers/chat";
 import { setIsFileMenu } from "../redux/reducers/misc";
 import { getSocket } from "../socket";
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const fileMenuRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -99,6 +101,10 @@ const Chat = ({ chatId, user }) => {
     if (bottomRef.current)
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  
+  useEffect(() => {
+    if(!chatDetails?.data?.chat) return navigate("/")
+  }, [chatDetails.data])
 
   const openFileHandler = (e) => {
     dispatch(setIsFileMenu(true));

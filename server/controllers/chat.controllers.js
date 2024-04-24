@@ -2,13 +2,17 @@ import {
   ALERTS,
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
-  REFETCH_CHATS
+  REFETCH_CHATS,
 } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
 import Chat from "../models/chat.models.js";
 import Message from "../models/message.models.js";
 import User from "../models/user.models.js";
-import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from "../utils/features.js";
+import {
+  deleteFilesFromCloudinary,
+  emitEvent,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 
 const newGroupChat = async (req, res, next) => {
   try {
@@ -153,7 +157,6 @@ const addMembers = async (req, res, next) => {
       message: "Members added successfully",
     });
   } catch (error) {
-    
     return res.status(404).json({
       success: false,
       message: error.message,
@@ -182,6 +185,8 @@ const removeMembers = async (req, res, next) => {
         new Error("Don't you have minimum 3 friends to create a group? 😏")
       );
 
+    const allChatMembers = chat.members.map((i) => i.toString());
+
     chat.members = chat.members.filter(
       (member) => member?.toString() !== userId.toString()
     );
@@ -195,7 +200,7 @@ const removeMembers = async (req, res, next) => {
       `${userThatWillBeRemoved.name} has been removed from the group 😕 `
     );
 
-    emitEvent(req, REFETCH_CHATS, chat.members);
+    emitEvent(req, REFETCH_CHATS, allChatMembers);
 
     return res.status(200).json({
       success: true,
@@ -259,14 +264,14 @@ const leaveGroup = async (req, res, next) => {
 };
 
 const sendAttachments = async (req, res, next) => {
-   try {
+  try {
     const { chatId } = req.body;
 
     const files = req.files || [];
 
     if (files.length < 1) return next(new Error("Please Upload Attachments"));
 
-    if (files.length >  5) return next(new Error("Files can't be more than 5"));
+    if (files.length > 5) return next(new Error("Files can't be more than 5"));
 
     const [chat, me] = await Promise.all([
       Chat.findById(chatId),
@@ -278,7 +283,7 @@ const sendAttachments = async (req, res, next) => {
     if (files.length < 1) return next(new Error("Please provide attachments"));
 
     // Upload files here
-    const attachments = await uploadFilesToCloudinary(files)
+    const attachments = await uploadFilesToCloudinary(files);
 
     const messageForDb = {
       content: "",
@@ -308,12 +313,12 @@ const sendAttachments = async (req, res, next) => {
       success: true,
       message,
     });
-   } catch (error) {
+  } catch (error) {
     return res.status(404).json({
       success: false,
       message: error.message,
     });
-   }
+  }
 };
 
 const getChatDetails = async (req, res, next) => {
@@ -348,7 +353,10 @@ const getChatDetails = async (req, res, next) => {
   } catch (error) {
     return res.status(404).json({
       success: false,
-      message: process.env.NODE_ENV.trim() === "DEVELOPMENT" ? error.message : "Invalid Path ID",
+      message:
+        process.env.NODE_ENV.trim() === "DEVELOPMENT"
+          ? error.message
+          : "Invalid Path ID",
       // message: error.path
     });
   }
@@ -427,7 +435,7 @@ const deleteChat = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Message Deleted Successfully",
+      message: "Group Deleted Successfully",
     });
   } catch (error) {
     return res.status(404).json({
@@ -444,6 +452,13 @@ const getMessages = async (req, res, next) => {
 
     const resultPerPage = 20;
     const skip = (page - 1) * resultPerPage;
+
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) return next(new Error("Chat not found"));
+
+    if (!chat.members.includes(req.user.toString()))
+      return next(new Error("You are not allowed to access this chat"));
 
     const [messages, totalMessageCount] = await Promise.all([
       Message.find({ chat: chatId })
@@ -482,6 +497,5 @@ export {
   newGroupChat,
   removeMembers,
   renameGroup,
-  sendAttachments
+  sendAttachments,
 };
-

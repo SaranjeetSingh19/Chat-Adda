@@ -11,8 +11,8 @@ const ConfirmDeleteDialog = ({open, handleClose, deleteHandler}) => {
                 </DialogContentText>
             </DialogContent>
     <DialogActions>
-        <Button>No</Button>
-        <Button>Yes</Button>
+        <Button onClick={handleClose}>No</Button>
+        <Button onClick={deleteHandler}>Yes</Button>
     </DialogActions>
     </Dialog>
   )
