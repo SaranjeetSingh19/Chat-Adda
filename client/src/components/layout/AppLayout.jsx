@@ -1,29 +1,39 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { useMyChatsQuery } from "../../redux/api/api";
-import { setIsMobile } from "../../redux/reducers/misc";
+import {
+  setIsDeleteMenu,
+  setIsMobile,
+  setIsSelectedDeleteChat,
+} from "../../redux/reducers/misc";
 import { getSocket } from "../../socket";
 import Title from "../shared/Title";
 import ChatList from "../specific/ChatList";
 import Profile from "../specific/Profile";
 import Header from "./Header";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from "../constants/events";
+import {
+  NEW_MESSAGE_ALERT,
+  NEW_REQUEST,
+  REFETCH_CHATS,
+} from "../constants/events";
 import { useCallback } from "react";
 import {
   incrementNotificationCount,
   setNewMessagesAlert,
 } from "../../redux/reducers/chat";
 import { getOrSaveFromStorage } from "../../lib/features";
+import DeleteChatMenu from "../shared/DeleteChatMenu";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
     const dispatch = useDispatch();
     const chatId = params.chatId;
-    const navigate = useNavigate()
+    const deleteMenuAnchor = useRef(null);
+    const navigate = useNavigate();
 
     const socket = getSocket();
 
@@ -39,9 +49,10 @@ const AppLayout = () => (WrappedComponent) => {
       getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
     }, [newMessagesAlert]);
 
-    const handleDeleteChat = (e, _id, groupChat) => {
-      e.preventDefault();
-      console.log("Delete chat", e, _id, groupChat);
+    const handleDeleteChat = (e, chatId, groupChat) => {
+      dispatch(setIsDeleteMenu(true));
+      dispatch(setIsSelectedDeleteChat({ chatId, groupChat }));
+      deleteMenuAnchor.current = e.currentTarget;
     };
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
@@ -50,7 +61,8 @@ const AppLayout = () => (WrappedComponent) => {
       (data) => {
         if (data.chatId === chatId) return;
         dispatch(setNewMessagesAlert(data));
-      },[chatId]
+      },
+      [chatId]
     );
 
     const newRequestListener = useCallback(() => {
@@ -58,14 +70,14 @@ const AppLayout = () => (WrappedComponent) => {
     }, [dispatch]);
 
     const refetchListener = useCallback(() => {
-      refetch()
-      navigate("/")
-    }, [refetch])
+      refetch();
+      navigate("/");
+    }, [refetch]);
 
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertListener,
       [NEW_REQUEST]: newRequestListener,
-      [REFETCH_CHATS]: refetchListener
+      [REFETCH_CHATS]: refetchListener,
     };
 
     useSocketEvents(socket, eventHandlers);
@@ -74,7 +86,10 @@ const AppLayout = () => (WrappedComponent) => {
       <div>
         <Title />
         <Header />
-
+        <DeleteChatMenu
+          dispatch={dispatch}
+          deleteMenuAnchor={deleteMenuAnchor}
+        />
         {isLoading ? (
           <Skeleton />
         ) : (
@@ -95,14 +110,13 @@ const AppLayout = () => (WrappedComponent) => {
             sm={4}
             md={3}
             height={"100%"}
-            bgcolor={"lightseagreen"}
+            bgcolor={"#001D21"}
             // borderRight={"2px solid #42A992"}
             sx={{
               display: {
                 xs: "none",
                 sm: "block",
               },
-
               overflow: "hidden",
               overflowY: "scroll",
             }}
@@ -127,7 +141,11 @@ const AppLayout = () => (WrappedComponent) => {
             lg={3}
             height={"100%"} // Change it to 100vh if any prob occurs
             bgcolor={"#E6E6FA"}
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{
+              display: { xs: "none", md: "block" },
+              padding: "2rem",
+              bgcolor: "#837461",
+            }}
             padding="2rem"
           >
             <Profile user={user} />

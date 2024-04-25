@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
+import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Loader from "./components/layout/Loader";

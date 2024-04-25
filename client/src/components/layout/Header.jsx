@@ -57,7 +57,7 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    console.log("Logout button");
+    // console.log("Logout button");
     try {
       const { data } = await axios.get(`${server}/api/v1/user/logout`, {
         withCredentials: true,
@@ -75,7 +75,7 @@ const Header = () => {
         <AppBar
           position="static"
           sx={{
-            bgcolor: " #9EE5D6",
+            bgcolor: "#00242D",
           }}
         >
           <Toolbar>

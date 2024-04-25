@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
  
 
   userSocketIDs.set(user._id.toString(), socket.id); // By this we will get to know that which user id (USER) is connected with which socket id
-  console.log("userSocketIDs:" ,userSocketIDs);
+  // console.log("userSocketIDs:" ,userSocketIDs);
 
   socket.on(NEW_MESSAGE, async ({  chatId, members, message }) => {
     // this is listening the request from client
@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log("user Disconnected");
+    // console.log("user Disconnected");
     userSocketIDs.delete(user._id.toString());
   });
 });

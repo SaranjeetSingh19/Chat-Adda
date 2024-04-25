@@ -193,12 +193,10 @@ const removeMembers = async (req, res, next) => {
 
     await chat.save();
 
-    emitEvent(
-      req,
-      ALERTS,
-      chat.members,
-      `${userThatWillBeRemoved.name} has been removed from the group 😕 `
-    );
+    emitEvent(req, ALERTS, chat.members, {
+      message: `${userThatWillBeRemoved.name} has been removed from the group 😕`,
+      chatId,
+    });
 
     emitEvent(req, REFETCH_CHATS, allChatMembers);
 
@@ -244,16 +242,14 @@ const leaveGroup = async (req, res, next) => {
       chat.save(),
     ]);
 
-    emitEvent(
-      req,
-      ALERTS,
-      chat.members,
-      `User ${user.name} has left the group`
-    );
+    emitEvent(req, ALERTS, chat.members, {
+      message: `User ${user.name} has left the group`,
+      chatId,
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Member removed successfully",
+      message: "Group left successfully",
     });
   } catch (error) {
     return res.status(404).json({
@@ -408,8 +404,8 @@ const deleteChat = async (req, res, next) => {
     if (chat.groupChat && chat.creator.toString() !== req.user.toString())
       return next(new Error("You are not allowed to delete this group!"));
 
-    if (!chat.groupChat && !chat.members.include(req.user.toString()))
-      return next(new Error("You are not allowed to delete the chat"));
+    if (!chat.groupChat && !chat.members.includes(req.user.toString()))
+      return next(new Error("You are not allowed to delete this chat"));
 
     //Here we have to delete all the msgs as well as attachments or files
     // from cloudinary
@@ -435,9 +431,10 @@ const deleteChat = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Group Deleted Successfully",
+      message: "Chat Deleted Successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(404).json({
       success: false,
       message: error.message,

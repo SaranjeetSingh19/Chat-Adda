@@ -103,8 +103,8 @@ const Chat = ({ chatId, user }) => {
   }, [messages]);
   
   useEffect(() => {
-    if(!chatDetails?.data?.chat) return navigate("/")
-  }, [chatDetails.data])
+    if(chatDetails.isError) return navigate("/")
+  }, [chatDetails.isError])
 
   const openFileHandler = (e) => {
     dispatch(setIsFileMenu(true));
@@ -139,9 +139,10 @@ const Chat = ({ chatId, user }) => {
   );
 
   const alertListener = useCallback(
-    (content) => {
+    (data) => {
+      if(data.chatId !== data.chatId) return; 
       const messageForAlert = {
-        content,
+        content: data.message,
         sender: {
           _id: "anyRandomWords",
           name: "Admin",
@@ -173,11 +174,17 @@ const Chat = ({ chatId, user }) => {
         ref={containerRef}
         padding={"1rem"}
         spacing={"1rem"}
-        backgroundColor={"#C8FBE8"}
+        // backgroundColor={"#2A4562"}
+        
         height={"90%"}
         sx={{
           overflow: "hidden",
           overflow: "auto",
+          backgroundImage: 'url("/chat_Bg.jpg")',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          width: '100%',
         }}
       >
         {allMessages.map((i) => (
@@ -200,11 +207,15 @@ const Chat = ({ chatId, user }) => {
           padding={"1rem"}
           alignItems={"center"}
           position={"relative"}
+          sx={{
+            bgcolor: "#1C2932"
+          }}
         >
           <IconButton
             sx={{
               position: "absolute",
               rotate: "30deg",
+              color: "#dadada"
             }}
             ref={fileMenuRef}
             onClick={openFileHandler}
@@ -213,20 +224,25 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
 
           <InputBox
+       
             placeholder="Message..."
             value={message}
             onChange={inputChangeHandler}
+            sx={{
+              bgcolor: "#1C2932",
+              color: "white"
+            }}
           />
 
           <IconButton
             type="submit"
             sx={{
-              backgroundColor: "#42A992",
+              backgroundColor: "#1D7A8F",
               color: "white",
               marginLeft: "1rem",
               padding: "0.5rem",
               "&:hover": {
-                backgroundColor: "seagreen",
+                backgroundColor: "#00262D",
               },
             }}
           >

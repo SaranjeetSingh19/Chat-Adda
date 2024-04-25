@@ -34,12 +34,12 @@ const Notifications = () => {
       const res = await acceptRequest({ requestId: _id, accept });
       
       if (res?.data?.success) {
-        console.log("Use socket here");
+        // console.log("Use socket here");
         toast.success(res?.data?.message);
       } else toast.error(res.data?.error || "Something went wrong");
     } catch (error) {
       toast.error("Something went wrong!")
-      console.log(error);
+      // console.log(error);
     }
   };
 

@@ -20,7 +20,8 @@ export const Link = styled(LinkComponent)`
   transition: all 0.3s ease;
   font-weight: bold;
   &:hover {
-    background-color: #e6e6fa;
+    background-color: #4AA6BD;
+ 
   }
 `;
 

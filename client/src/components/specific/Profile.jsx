@@ -51,10 +51,10 @@ export const Profilecard = ({ text, Icon, heading }) => {
       {Icon && Icon}
 
       <Stack>
-        <Typography color={"#42A992"} variant="body1">
+        <Typography color={"#012E1F"} variant="body1">
           {text}
         </Typography>
-        <Typography variant="caption" color={"#6F2764"}>
+        <Typography variant="caption" color={"#7C0000"}>
           {heading}
         </Typography>
       </Stack>

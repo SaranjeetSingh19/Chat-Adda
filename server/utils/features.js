@@ -29,12 +29,13 @@ const sendToken = (res, user, code, message) => {
 
   return res.status(code).cookie("huddle-token", token, cookieOptions).json({
     success: true,
+    user,
     message,
   });
 };
 
 const emitEvent  = (req, event, users, data) => {
-  console.log("Emmiting event..");
+  // console.log("Emmiting event..");
   const io = req.app.get("io")
 const userSockets = getSockets(users)
 io.to(userSockets).emit(event, data)

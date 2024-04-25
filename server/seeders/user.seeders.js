@@ -23,7 +23,7 @@ const createUser = async (numUsers) => {
 
     await Promise.all(usersPromise);
 
-    console.log("Users created", numUsers);
+    // console.log("Users created", numUsers);
     process.exit(1);
   } catch (error) {
     console.log("error is ==", error);

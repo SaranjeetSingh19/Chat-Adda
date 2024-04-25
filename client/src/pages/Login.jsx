@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -10,20 +10,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
+import React, { useState } from "react";
 
+import { useFileHandler, useInputValidation } from "6pp";
 import axios from "axios";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
-import { useFileHandler, useInputValidation } from "6pp";
-import { usernameValidator } from "../utils/validators";
 import { userExists } from "../redux/reducers/auth";
+import { usernameValidator } from "../utils/validators";
 
-import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { server } from "../constants/config";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoadings, setIsLoadings] = useState(false);
 
   const toggleLogin = () => setIsLogin((prev) => !prev);
 
@@ -38,15 +39,15 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    const toastId = toast.loading("Logging in...");
+    setIsLoadings(true);
     const config = {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
     };
-    try {
- 
+    try {  
       const { data } = await axios.post(
         `${server}/api/v1/user/login`,
         {
@@ -55,19 +56,27 @@ const Login = () => {
         },
         config
       );
- 
+
       dispatch(userExists(data.user));
-      toast.success(data.message);
-    } 
-    catch (error)
-     {
-       toast.error(error?.response?.data?.message || "Something went wrong");
-       console.log(error);
-     }
+      toast.success(data.message, {
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
+      console.log(error);
+    } finally {
+      setIsLoadings(false);
+    }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    const toastId = toast.loading("Signing in...");
+
+    setIsLoadings(true);
 
     const formData = new FormData();
     formData.append("avatar", avatar.file);
@@ -84,18 +93,24 @@ const Login = () => {
     };
 
     try {
-      console.log(server);
+      // console.log(server);
       const { data } = await axios.post(
         `${server}/api/v1/user/new`,
         formData,
         config
       );
       dispatch(userExists(data.user));
-      toast.success(data.message);
+      toast.success(data.message, {
+        id: toastId,
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
-      console.log(error.response?.data?.message);
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
+      // console.log(error.response?.data?.message);
+      // console.log(error);
+    } finally {
+      setIsLoadings(false);
     }
   };
 
@@ -157,6 +172,7 @@ const Login = () => {
                   variant="contained"
                   fullWidth
                   sx={{ marginTop: "1rem" }}
+                  disabled={isLoadings}
                 >
                   Login
                 </Button>
@@ -168,6 +184,7 @@ const Login = () => {
                   variant="text"
                   fullWidth
                   onClick={toggleLogin}
+                  disabled={isLoadings}
                 >
                   {" "}
                   Sign up instead
@@ -283,6 +300,7 @@ const Login = () => {
                   variant="contained"
                   style={{ width: "300px", height: "50px" }} // Targets the input element
                   sx={{ marginTop: "1rem" }}
+                  disabled={isLoadings}
                 >
                   Sign up
                 </Button>
@@ -294,6 +312,7 @@ const Login = () => {
                   variant="text"
                   style={{ width: "300px", height: "50px" }} // Targets the input element
                   onClick={toggleLogin}
+                  disabled={isLoadings}
                 >
                   {" "}
                   Login instead

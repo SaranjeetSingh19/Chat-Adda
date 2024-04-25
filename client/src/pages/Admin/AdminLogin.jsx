@@ -12,7 +12,7 @@ const AdminLogin = () => {
 
     const  submitHandler = (e) => {
         e.preventDefault();
-        console.log("Submit btn");
+        // console.log("Submit btn");
     }
     
     if(isAdmin) return <Navigate to="/admin/dashboard"/> 

@@ -1,7 +1,8 @@
 import React, { memo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import AvatarCard from "./AvatarCard";
-import { Link } from "../styles/StyledComponents"
+import { Link } from "../styles/StyledComponents";
+import { motion } from "framer-motion";
 
 const ChatItem = ({
   avatar = [],
@@ -16,28 +17,39 @@ const ChatItem = ({
 }) => {
   return (
     <Link
+    sx={{
+      color: "white",
+      '&:hover': {
+      color: 'orange', // Change to your desired hover effect
+    },
+    }}
       to={`/chat/${_id}`}
       onContextMenu={(e) => handleDeleteChat(e, _id, groupChat)}
     >
       {/* "onContextMenu" is get triggered when we right click and see options of menus */}
-      <div
+      <motion.div
+      
+        initial={{ opacity: 0, y: "-100%" }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
         style={{
           display: "flex",
           gap: "1rem",
           justifyContent: "space-evenly",
           alignItems: "center",
           padding: "1rem",
-          backgroundColor: sameSender ? "white" : "unset",
-          color: sameSender ? "black" : "unset",
+          backgroundColor: sameSender ? "#1F89A3" : "unset",
+          color: sameSender ? "orange" : "unset",
           position: "relative",
-          
         }}
+        
       >
-        
         <AvatarCard avatar={avatar} />
-        
-        <Stack>
-          <Typography >{name}</Typography>
+
+        <Stack
+         
+        >
+          <Typography>{name}</Typography>
           {newMessageAlert && (
             <Typography>{newMessageAlert.count} New Message</Typography>
           )}
@@ -53,7 +65,7 @@ const ChatItem = ({
             }}
           />
         )}
-      </div>
+      </motion.div>
     </Link>
   );
 };

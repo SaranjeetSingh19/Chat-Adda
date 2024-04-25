@@ -1,4 +1,3 @@
-import React, { Suspense, memo, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
@@ -12,6 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import React, { Suspense, memo, useEffect, useState } from "react";
 
 import {
   Add as AddIcon,
@@ -22,23 +22,21 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Link } from "../components/styles/StyledComponents";
-import AvatarCard from "../components/shared/AvatarCard";
-import { sampleChat } from "../components/constants/sampleData";
 import { lazy } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Loader from "../components/layout/Loader";
+import AvatarCard from "../components/shared/AvatarCard";
 import UserItem from "../components/shared/UserItem";
+import { Link } from "../components/styles/StyledComponents";
+import { useAsyncMutation, useErrors } from "../hooks/hook";
 import {
-  useAddGroupMemberMutation,
   useChatDetailsQuery,
   useDeleteGroupMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
-  useRenameGroupMutation,
+  useRenameGroupMutation
 } from "../redux/api/api";
-import { useAsyncMutation, useErrors } from "../hooks/hook";
-import Loader from "../components/layout/Loader";
-import { useDispatch, useSelector } from "react-redux";
 import { setIsAddMember } from "../redux/reducers/misc";
 
 const Groups = () => {
@@ -136,7 +134,7 @@ const Groups = () => {
   };
 
   const openAddMemberHandler = () => {
-    console.log("Member added");
+    // console.log("Member added");
     dispatch(setIsAddMember(true));
   };
 
@@ -321,7 +319,7 @@ const Groups = () => {
         item
         xs={12}
         sm={8}
-        backgroundColor={"#C8FBE8"}
+        backgroundColor={"#2A4562"}
         sx={{
           display: "flex",
           flexDirection: "column",

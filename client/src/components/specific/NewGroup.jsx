@@ -40,7 +40,7 @@ const NewGroup = () => {
 
   useErrors(errors);
 
-  console.log("From NewGroup.jsx :", data);
+  // console.log("From NewGroup.jsx :", data);
 
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
