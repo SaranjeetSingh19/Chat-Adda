@@ -18,8 +18,8 @@ const newGroupChat = async (req, res, next) => {
   try {
     const { name, members } = req.body;
 
-    // if (members.length < 2)
-    //   return next(new Error("Group chat at least must have 3 members"));
+    if (members.length < 2)
+      return next(new Error("Group chat at least must have 3 members"));
 
     const allMembers = [...members, req.user];
 

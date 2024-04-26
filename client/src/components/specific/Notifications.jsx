@@ -9,16 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import React, { memo } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useErrors } from "../../hooks/hook";
 import {
   useAcceptFriendRequestMutation,
-  useGetNotificationsQuery,
-  useSendFriendRequestMutation,
+  useGetNotificationsQuery
 } from "../../redux/api/api";
-import { useDispatch, useSelector } from "react-redux";
 import { setIsNotification } from "../../redux/reducers/misc";
-import toast from "react-hot-toast";
-import { transformImage } from "../../lib/features";
 
 const Notifications = () => {
   const dispatch = useDispatch();
@@ -32,13 +30,13 @@ const Notifications = () => {
 
     try {
       const res = await acceptRequest({ requestId: _id, accept });
-      
+
       if (res?.data?.success) {
         // console.log("Use socket here");
         toast.success(res?.data?.message);
-      } else toast.error(res.data?.error || "Something went wrong");
+      } else toast.error(res.data?.error );  //|| "Something went wrong"
     } catch (error) {
-      toast.error("Something went wrong!")
+      toast.error("Something went wrong!");
       // console.log(error);
     }
   };
@@ -53,15 +51,16 @@ const Notifications = () => {
     <Dialog open={isNotification} onClose={closeHandler}>
       <Stack
         p={{ xs: "1rem", sm: "2rem" }}
-        backgroundColor={"#EBD1E3"}
+        backgroundColor={"#0C4545"}
         maxWidth={"25rem"}
+        color={"white"}
       >
         <DialogTitle>Notifications</DialogTitle>
 
         {isLoading ? (
           <Skeleton />
         ) : (
-          <>
+          <>  
             {data?.message?.length > 0 ? (
               data?.message?.map(({ sender, _id }) => (
                 <NotificationItem
@@ -90,6 +89,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         alignItems={"center"}
         spacing={"1rem"}
         width={"100%"}
+         
       >
         <Avatar src={avatar} />
         <Typography
@@ -104,7 +104,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
             width: "100%",
           }}
         >
-          {`${name} sent you a friend request.`}
+          {`${name} sent you a friend request.  `}
         </Typography>
         <Stack
           direction={{
@@ -112,8 +112,13 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
             sm: "row",
           }}
         >
-          <Button onClick={() => handler({ _id, accept: true })}>Accept</Button>
-          <Button color="error" onClick={() => handler({ _id, accept: false })}>
+          <Button onClick={() => handler({ _id, accept: true })}
+           sx={{color: "skyblue"}}
+          >
+            Accept
+            </Button>
+
+          <Button sx={{color: "red"}} onClick={() => handler({ _id, accept: false })}>
             Reject
           </Button>
         </Stack>

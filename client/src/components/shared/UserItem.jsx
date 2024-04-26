@@ -40,7 +40,7 @@ const UserItem = ({
           size="small"
           sx={{
             "&:hover": {
-              bgcolor: "#B167C2",
+              bgcolor: "skyblue",
             },
             bgcolor: isAdded ? "error.main" : "primary.main",
           }}

@@ -35,7 +35,7 @@ import {
   useDeleteGroupMutation,
   useMyGroupsQuery,
   useRemoveGroupMemberMutation,
-  useRenameGroupMutation
+  useRenameGroupMutation,
 } from "../redux/api/api";
 import { setIsAddMember } from "../redux/reducers/misc";
 
@@ -152,18 +152,18 @@ const Groups = () => {
     navigate("/");
   };
 
-  useEffect(() => {
-    if (chatId) {
-      setGroupName(`Gc ka name ${chatId}`);
-      setGroupNameUpdatedValue(`Gc ka updated name ${chatId}`);
-    }
+  // useEffect(() => {
+  //   if (chatId) {
+  //     setGroupName(`${chatId}`);
+  //     setGroupNameUpdatedValue(` ${chatId}`);
+  //   }
 
-    return () => {
-      setGroupName("");
-      setGroupNameUpdatedValue("");
-      setIsEdit(false);
-    };
-  }, [chatId]);
+  //   return () => {
+  //     setGroupName("");
+  //     setGroupNameUpdatedValue("");
+  //     setIsEdit(false);
+  //   };
+  // }, [chatId]);
 
   const IconBtns = // Hamburger button when small screen & full grup list when desktop
     (
@@ -190,11 +190,11 @@ const Groups = () => {
               position: "absolute",
               top: "2rem",
               left: "2rem",
-              bgcolor: "darkgreen",
-              color: "white",
+              bgcolor: "#00181C",
+              color: "skyblue",
               "&:hover": {
-                bgcolor: "lightgreen",
-                color: "darkgreen",
+                bgcolor: "#00282E",
+                color: "white",
               },
             }}
             onClick={navigateBack}
@@ -307,7 +307,7 @@ const Groups = () => {
           display: {
             xs: "none",
             sm: "block",
-            backgroundColor: "white",
+            backgroundColor: "#001D21",
             borderRight: "2px solid #9EE5D6",
           },
         }}
@@ -319,7 +319,7 @@ const Groups = () => {
         item
         xs={12}
         sm={8}
-        backgroundColor={"#2A4562"}
+        backgroundColor={"#2A96AD"}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -332,14 +332,10 @@ const Groups = () => {
 
         {groupName && (
           <>
-            {GroupName}
+            <Typography color={"orange"}>{GroupName}</Typography>
 
-            <Typography
-              margin={"2rem"}
-              variant="body1"
-              alignSelf={"flex-start"}
-            >
-              Members
+            <Typography margin={"2rem"} variant="h5" alignSelf={"flex-start"}>
+              All Group Members
             </Typography>
 
             <Stack
@@ -424,10 +420,11 @@ const GroupsList = ({ w = "100%", myGroups = [], chatId }) => (
   <Stack
     width={w}
     sx={{
-      backgroundColor: "lightseagreen",
+      backgroundColor: "#001D21",
       height: "100vh",
       overflow: "auto",
       overflowX: "hidden",
+      paddingTop: "1.2rem",
     }}
   >
     {myGroups.length > 0 ? (
@@ -435,7 +432,7 @@ const GroupsList = ({ w = "100%", myGroups = [], chatId }) => (
         <GroupListItems group={group} chatId={chatId} key={group._id} />
       ))
     ) : (
-      <Typography textAlign={"center"} padding={"1rem"}>
+      <Typography textAlign={"center"} padding={"1rem"} color={"white"}>
         Oops! You don't have any groups
       </Typography>
     )}
@@ -456,6 +453,7 @@ const GroupListItems = memo(({ group, chatId }) => {
         direction={"row"}
         spacing={"1rem"}
         padding={"0.7rem"}
+        color={"white"}
         alignItems={"center"}
       >
         <AvatarCard avatar={avatar}></AvatarCard>

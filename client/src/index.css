@@ -1,6 +1,8 @@
 * {
-  font-family: "Margelin", cursive !important;
+  font-family: "Demore Terate", cursive !important;
+  /* font-family: "Creme", cursive !important; */
 }
+
 ::-webkit-scrollbar {
   width: 10px;
 }

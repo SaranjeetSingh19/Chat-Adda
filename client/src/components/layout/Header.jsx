@@ -12,6 +12,7 @@ import {
   Badge,
   Box,
   IconButton,
+  Stack,
   Toolbar,
   Tooltip,
   Typography,
@@ -40,14 +41,16 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isSearch, isNotification, isNewGroup } = useSelector((state) => state.misc);
+  const { isSearch, isNotification, isNewGroup } = useSelector(
+    (state) => state.misc
+  );
   const { notificationCount } = useSelector((state) => state.chat);
 
   const handleMobile = () => dispatch(setIsMobile(true));
   const openSearch = () => dispatch(setIsSearch(true));
 
   const openNewGroup = () => {
-   dispatch(setIsNewGroup(true))
+    dispatch(setIsNewGroup(true));
   };
   const navigateToGroup = () => navigate("/groups");
 
@@ -65,7 +68,7 @@ const Header = () => {
       dispatch(userNotExists());
       toast.success(data.message);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong!");
+      toast.error(error?.response?.data?.message); //|| "Something went wrong!"
     }
   };
 
@@ -79,12 +82,36 @@ const Header = () => {
           }}
         >
           <Toolbar>
-            <Typography
+            {/* <Typography
               variant="h6"
               sx={{ display: { xs: "none", sm: "block" } }}
             >
               bonKsteR
-            </Typography>
+            </Typography> */}
+
+
+            <Stack
+              sx={{
+                backgroundImage: 'url("/only_pm_logo.png")',
+                backgroundSize: 'cover',
+                height: '3.2rem',
+                width: '3.2rem',
+               
+              }}
+              >   
+              </Stack>
+            <Stack
+              sx={{
+                backgroundImage: 'url("/polu.png")',
+                backgroundSize: 'cover',
+                height: '3rem',
+                width: '3rem',
+                marginBottom: "0.9rem",
+                marginLeft: "0.3rem"
+               
+              }}
+              >   
+              </Stack>
 
             <Box sx={{ display: { xs: "block", sm: "none" } }}>
               <IconButton color="inherit" onClick={handleMobile}>

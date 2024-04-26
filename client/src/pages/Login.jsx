@@ -47,7 +47,7 @@ const Login = () => {
         "Content-Type": "application/json",
       },
     };
-    try {  
+    try {
       const { data } = await axios.post(
         `${server}/api/v1/user/login`,
         {
@@ -62,7 +62,7 @@ const Login = () => {
         id: toastId,
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong", {
+      toast.error(error?.response?.data?.message , { //|| "Something went wrong"
         id: toastId,
       });
       console.log(error);
@@ -104,7 +104,7 @@ const Login = () => {
         id: toastId,
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong", {
+      toast.error(error?.response?.data?.message, { //  || "Something went wrong"
         id: toastId,
       });
       // console.log(error.response?.data?.message);
@@ -115,7 +115,15 @@ const Login = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#ADD8E6  " }}>
+    <Box
+      sx={{
+        backgroundImage: 'url("/loginBG.jpg")',
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        width: "100%",
+      }}
+    >
       <Container
         component={"main"}
         maxWidth="xs"
@@ -136,6 +144,8 @@ const Login = () => {
             flexDirection: "column",
             alignItems: "center",
             maxHeight: "98%",
+            bgcolor: "#023F41",
+            color: "#A6D7DE",
           }}
         >
           {isLogin ? (
@@ -150,6 +160,12 @@ const Login = () => {
                   variant="outlined"
                   value={username.value}
                   onChange={username.changeHandler}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
+                  }}
                 />
                 {username.error && (
                   <Typography color="error" variant="caption">
@@ -165,13 +181,19 @@ const Login = () => {
                   type="password"
                   value={password.value}
                   onChange={password.changeHandler}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
+                  }}
                 />
                 <Button
                   type="submit"
                   color="primary"
                   variant="contained"
                   fullWidth
-                  sx={{ marginTop: "1rem" }}
+                  sx={{ marginTop: "1rem", color: "white" }}
                   disabled={isLoadings}
                 >
                   Login
@@ -180,7 +202,7 @@ const Login = () => {
                   OR
                 </Typography>
                 <Button
-                  sx={{ marginTop: "1rem" }}
+                  sx={{ marginTop: "1rem", color: "white" }}
                   variant="text"
                   fullWidth
                   onClick={toggleLogin}
@@ -256,6 +278,12 @@ const Login = () => {
                   variant="outlined"
                   value={name.value}
                   onChange={name.changeHandler}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
+                  }}
                 />
 
                 <TextField
@@ -269,6 +297,12 @@ const Login = () => {
                   sx={{
                     marginTop: "5px",
                   }}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
+                  }}
                 />
                 <TextField
                   required
@@ -281,6 +315,12 @@ const Login = () => {
                   sx={{
                     marginTop: "5px",
                   }}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
+                  }}
                 />
                 <TextField
                   required
@@ -292,6 +332,12 @@ const Login = () => {
                   onChange={password.changeHandler}
                   sx={{
                     marginTop: "5px",
+                  }}
+                  InputLabelProps={{
+                    style: { color: "orange" },
+                  }}
+                  InputProps={{
+                    style: { color: "white" }, // Color of the input text
                   }}
                 />
                 <Button
@@ -310,7 +356,7 @@ const Login = () => {
                 <Button
                   sx={{ marginTop: "2px" }}
                   variant="text"
-                  style={{ width: "300px", height: "50px" }} // Targets the input element
+                  style={{ width: "300px", height: "50px", color: "white" }} // Targets the input element
                   onClick={toggleLogin}
                   disabled={isLoadings}
                 >

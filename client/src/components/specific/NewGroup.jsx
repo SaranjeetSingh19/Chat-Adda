@@ -56,7 +56,10 @@ const NewGroup = () => {
     if (selectedMembers < 2)
       return toast.error("Please select at least 3 members");
 
-    newGroup("Creating group..." ,{ name: groupName.value, members: selectedMembers });
+    newGroup("Creating group...", {
+      name: groupName.value,
+      members: selectedMembers,
+    });
   };
 
   const closeHandler = () => {
@@ -68,8 +71,9 @@ const NewGroup = () => {
       <Stack
         p={{ xs: "0rem", sm: "1rem" }}
         width={"23rem"}
-        backgroundColor={"#EBD1E3"}
+        backgroundColor={"#0C4545"}
         spacing={"2rem"}
+        color={"white"}
       >
         <DialogTitle textAlign={"center"} variant="h4">
           New Group
@@ -78,6 +82,9 @@ const NewGroup = () => {
         <TextField
           value={groupName.value}
           onChange={groupName.changeHandler}
+          InputLabelProps={{
+            style: { color: "#dadada" },
+          }}
           label="Group name"
         />
         <Typography variant="body1">Members</Typography>
@@ -98,12 +105,19 @@ const NewGroup = () => {
         </Stack>
 
         <Stack direction={"row"} justifyContent={"space-evenly"}>
-          <Button variant="text" color="error" onClick={closeHandler}
-          disabled={isLoadingNewGroup}
+          <Button
+            variant="text"
+            color="error"
+            onClick={closeHandler}
+            disabled={isLoadingNewGroup}
           >
             Cancel
           </Button>
-          <Button variant="contained" onClick={submitHandler}>
+          <Button
+            variant="contained"
+            sx={{ bgcolor: "skyblue", color: "darkblue" }}
+            onClick={submitHandler}
+          >
             Create
           </Button>
         </Stack>

@@ -7,7 +7,7 @@ const useErrors = (errors = []) => {
       if (isError) {
         if (fallback) fallback();
         else {
-          toast.error(error?.data?.message || "Something went wrong");
+          toast.error(error?.data?.message ); // || "Something went wrong"
           console.log(error);
         }
       }
@@ -33,6 +33,7 @@ const useAsyncMutation = (mutationHook) => {
         });
         setData(res.data);
       } else {
+        console.log(res?.error?.data?.message);
         toast.error(res?.error?.data?.message || "Something went wrong!", {
           id: toastId,
         });

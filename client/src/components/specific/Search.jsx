@@ -52,8 +52,10 @@ const Search = () => {
       <Stack
         p={"1rem"}
         direction={"column"}
-        backgroundColor={"#EBD1E3"}
+        backgroundColor={"#0C4545"}
         width={"25rem"}
+        color={"white"}
+
       >
         <DialogTitle textAlign={"center"}>Find People</DialogTitle>
         <TextField
@@ -64,8 +66,8 @@ const Search = () => {
           size="small"
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
+              <InputAdornment position="start" >
+                <SearchIcon sx={{color: "white"}} />
               </InputAdornment>
             ),
           }}

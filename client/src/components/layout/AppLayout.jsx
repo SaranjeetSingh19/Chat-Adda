@@ -144,7 +144,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: { xs: "none", md: "block" },
               padding: "2rem",
-              bgcolor: "#837461",
+              bgcolor: "#2A96AD",
             }}
             padding="2rem"
           >
