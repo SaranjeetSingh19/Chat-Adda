@@ -9,15 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import {
   useAvailableFriendsQuery,
   useNewGroupMutation,
 } from "../../redux/api/api";
-import UserItem from "../shared/UserItem";
-import { useDispatch, useSelector } from "react-redux";
 import { setIsNewGroup } from "../../redux/reducers/misc";
-import toast from "react-hot-toast";
+import UserItem from "../shared/UserItem";
 
 const NewGroup = () => {
   const dispatch = useDispatch();
@@ -40,8 +40,6 @@ const NewGroup = () => {
 
   useErrors(errors);
 
-  // console.log("From NewGroup.jsx :", data);
-
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
       prev.includes(id) // If the id is already includes/exists then, it will filter and not takes that id and if id doesn't exist then it will add it in an Array
@@ -51,10 +49,10 @@ const NewGroup = () => {
   };
 
   const submitHandler = () => {
-    if (!groupName.value) return toast.error("Group name is required");
+    if (!groupName.value) return toast.error("GroupNname is Required 🥸👊🏻");
 
     if (selectedMembers < 2)
-      return toast.error("Please select at least 3 members");
+      return toast.error("Please Select at Least 3 Members 😐");
 
     newGroup("Creating group...", {
       name: groupName.value,

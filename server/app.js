@@ -1,21 +1,29 @@
+import { v2 as cloudinary } from "cloudinary";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { v4 as uuid } from "uuid";
 import { errorMiddleWare } from "./middlewares/error.js";
+import adminRoute from "./routes/admin.routes.js";
 import charRoute from "./routes/chat.routes.js";
 import userRoute from "./routes/user.routes.js";
-import adminRoute from "./routes/admin.routes.js";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import { v4 as uuid } from "uuid";
-import cors from "cors";
-import { v2 as cloudinary } from "cloudinary";
 
-import { connectDb } from "./utils/features.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
+import {
+  CHAT_EXITED,
+  CHAT_JOINED,
+  NEW_MESSAGE,
+  NEW_MESSAGE_ALERT,
+  ONLINE_USERS,
+  START_TYPING,
+  STOP_TYPING,
+} from "./constants/events.js";
 import { getSockets } from "./lib/helper.js";
-import Message from "./models/message.models.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
+import Message from "./models/message.models.js";
+import { connectDb } from "./utils/features.js";
 
 dotenv.config({
   path: "./.env",
@@ -25,6 +33,7 @@ const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
 const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
 const userSocketIDs = new Map();
+const onlineUsers = new Set();
 
 connectDb(mongoURI);
 
@@ -52,7 +61,7 @@ const io = new Server(server, {
   },
 });
 
-app.set("io", io)
+app.set("io", io);
 
 //Using middlewares
 app.use(express.json());
@@ -78,23 +87,20 @@ app.get("/", (req, res) => {
   res.send("From home route");
 });
 
-
 io.use((socket, next) => {
-  cookieParser()(socket.request, socket.request.res,
- async (err) => await socketAuthenticator(err, socket, next)
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err) => await socketAuthenticator(err, socket, next)
   );
 });
 
-
 io.on("connection", (socket) => {
- 
-  const user = socket.user
- 
+  const user = socket.user;
 
   userSocketIDs.set(user._id.toString(), socket.id); // By this we will get to know that which user id (USER) is connected with which socket id
-  // console.log("userSocketIDs:" ,userSocketIDs);
 
-  socket.on(NEW_MESSAGE, async ({  chatId, members, message }) => {
+  socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     // this is listening the request from client
     const messageForRealTime = {
       content: message,
@@ -127,23 +133,38 @@ io.on("connection", (socket) => {
     try {
       await Message.create(messageForDb);
     } catch (error) {
-      console.log("Error while saving in msgs in DB:", error);
+      toast.error("Error while Saving Messages in Database");
     }
   });
 
-  socket.on(START_TYPING, ({chatId, members}) => {
-    const memberSockets = getSockets(members)
-    socket.to(memberSockets).emit(START_TYPING, {chatId}) 
-  })
-  
-  socket.on(STOP_TYPING, ({chatId, members}) => {
-    const memberSockets = getSockets(members)
-    socket.to(memberSockets).emit(STOP_TYPING, {chatId}) 
-  })
+  socket.on(START_TYPING, ({ chatId, members }) => {
+    const memberSockets = getSockets(members);
+    socket.to(memberSockets).emit(START_TYPING, { chatId });
+  });
+
+  socket.on(STOP_TYPING, ({ chatId, members }) => {
+    const memberSockets = getSockets(members);
+    socket.to(memberSockets).emit(STOP_TYPING, { chatId });
+  });
+
+  socket.on(CHAT_JOINED, ({ userId, members }) => {
+    onlineUsers.add(userId?.toString());
+
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
+
+  socket.on(CHAT_EXITED, ({ userId, members }) => {
+    onlineUsers.delete(userId?.toString());
+
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(ONLINE_USERS, Array.from(onlineUsers));
+  });
 
   socket.on("disconnect", () => {
-    // console.log("user Disconnected");
     userSocketIDs.delete(user._id.toString());
+    onlineUsers.delete(user._id?.toString());
+    socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 });
 
@@ -153,4 +174,5 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port} in ${envMode} mode`);
 });
 
-export { mongoURI, envMode, port, userSocketIDs };
+export { envMode, mongoURI, port, userSocketIDs };
+

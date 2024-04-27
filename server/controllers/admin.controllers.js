@@ -1,7 +1,7 @@
-import User from "../models/user.models.js";
+import jwt from "jsonwebtoken";
 import Chat from "../models/chat.models.js";
 import Message from "../models/message.models.js";
-import jwt from "jsonwebtoken";
+import User from "../models/user.models.js";
 import { cookieOptions } from "../utils/features.js";
 
 const adminLogin = async (req, res, next) => {
@@ -119,28 +119,28 @@ const allMessages = async (req, res, next) => {
       .populate("chat", "groupChat");
 
     const transformedMessages = messages.map(
-      ({ content, _id, attachments, sender, createdAt, chat }) => ({
+      ({ content, attachments, _id, sender, createdAt, chat }) => ({
         _id,
         attachments,
         content,
         createdAt,
-        chat: chat._id,
-        groupChat: chat.groupChat,
+        chat: chat?._id,
+        groupChat: chat?.groupChat,
         sender: {
-          _id: sender._id,
-          name: sender.name,
-          avatar: sender.avatar.url,
+          _id: sender?._id,
+          name: sender?.name,
+          avatar: sender?.avatar?.url,
         },
       })
     );
 
     return res.status(200).json({
       success: true,
-      messages,
+      messages: transformedMessages,
     });
   } catch (error) {
     return res.status(404).json({
-      success: false,
+      successysdd: false,
       message: error.message,
     });
   }
@@ -219,17 +219,18 @@ const adminLogout = async (req, res, next) => {
   }
 };
 
-const getAdminData = async(req,res,next) => {
- res.status(200).json({
-    admin: true
- })
-}
+const getAdminData = async (req, res, next) => {
+  res.status(200).json({
+    admin: true,
+  });
+};
 
 export {
-  allUsers,
+  adminLogin,
+  adminLogout,
   allChats,
   allMessages,
+  allUsers,
+  getAdminData,
   getDashboardStats,
-  adminLogin,
-  adminLogout, getAdminData
 };

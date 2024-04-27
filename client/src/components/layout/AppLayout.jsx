@@ -1,31 +1,32 @@
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
+import { getOrSaveFromStorage } from "../../lib/features";
 import { useMyChatsQuery } from "../../redux/api/api";
-import {
-  setIsDeleteMenu,
-  setIsMobile,
-  setIsSelectedDeleteChat,
-} from "../../redux/reducers/misc";
-import { getSocket } from "../../socket";
-import Title from "../shared/Title";
-import ChatList from "../specific/ChatList";
-import Profile from "../specific/Profile";
-import Header from "./Header";
-import {
-  NEW_MESSAGE_ALERT,
-  NEW_REQUEST,
-  REFETCH_CHATS,
-} from "../constants/events";
-import { useCallback } from "react";
 import {
   incrementNotificationCount,
   setNewMessagesAlert,
 } from "../../redux/reducers/chat";
-import { getOrSaveFromStorage } from "../../lib/features";
+import {
+  setIsDeleteMenu,
+  setIsMobile,
+  setIsMobileProfile,
+  setIsSelectedDeleteChat,
+} from "../../redux/reducers/misc";
+import { getSocket } from "../../socket";
+import {
+  NEW_MESSAGE_ALERT,
+  NEW_REQUEST,
+  ONLINE_USERS,
+  REFETCH_CHATS,
+} from "../constants/events";
 import DeleteChatMenu from "../shared/DeleteChatMenu";
+import Title from "../shared/Title";
+import ChatList from "../specific/ChatList";
+import Profile from "../specific/Profile";
+import Header from "./Header";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -33,11 +34,15 @@ const AppLayout = () => (WrappedComponent) => {
     const dispatch = useDispatch();
     const chatId = params.chatId;
     const deleteMenuAnchor = useRef(null);
+
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
     const navigate = useNavigate();
 
     const socket = getSocket();
 
     const { isMobile } = useSelector((state) => state.misc);
+    const { isMobileProfile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
     const { newMessagesAlert } = useSelector((state) => state.chat);
 
@@ -56,6 +61,7 @@ const AppLayout = () => (WrappedComponent) => {
     };
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
+    const handleMobileProfileClose = () => dispatch(setIsMobileProfile(false));
 
     const newMessageAlertListener = useCallback(
       (data) => {
@@ -72,12 +78,17 @@ const AppLayout = () => (WrappedComponent) => {
     const refetchListener = useCallback(() => {
       refetch();
       navigate("/");
-    }, [refetch]);
+    }, [refetch, navigate]);
+
+    const onlineEventListener = useCallback((data) => {
+      setOnlineUsers(data);
+    }, []);
 
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]: newMessageAlertListener,
       [NEW_REQUEST]: newRequestListener,
       [REFETCH_CHATS]: refetchListener,
+      [ONLINE_USERS]: onlineEventListener,
     };
 
     useSocketEvents(socket, eventHandlers);
@@ -100,10 +111,10 @@ const AppLayout = () => (WrappedComponent) => {
               chatId={chatId}
               handleDeleteChat={handleDeleteChat}
               newMessagesAlert={newMessagesAlert}
+              onlineUsers={onlineUsers}
             />
           </Drawer>
         )}
-
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
             item
@@ -129,12 +140,19 @@ const AppLayout = () => (WrappedComponent) => {
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
                 newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
               />
             )}
           </Grid>
+
           <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
             <WrappedComponent {...props} chatId={chatId} user={user} />
           </Grid>
+
+          <Drawer open={isMobileProfile} onClose={handleMobileProfileClose}>
+            <Profile user={user} />
+          </Drawer>
+
           <Grid
             item
             md={4}
@@ -142,7 +160,10 @@ const AppLayout = () => (WrappedComponent) => {
             height={"100%"} // Change it to 100vh if any prob occurs
             bgcolor={"#E6E6FA"}
             sx={{
-              display: { xs: "none", md: "block" },
+              display: {
+                xs: "none",
+                sm: "block",
+              },
               padding: "2rem",
               bgcolor: "#2A96AD",
             }}

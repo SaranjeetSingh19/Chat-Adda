@@ -1,9 +1,15 @@
 import {
   Add as AddIcon,
+  Biotech,
   Group as GroupIcon,
+  Info,
   Logout as LogoutIcon,
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
+  Person,
+  Person2,
+  Person3,
+  Person4,
   Search as SearchIcon,
 } from "@mui/icons-material";
 import {
@@ -15,7 +21,6 @@ import {
   Stack,
   Toolbar,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import React, { Suspense, lazy, useState } from "react";
 
@@ -25,13 +30,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { server } from "../../constants/config";
 import { userNotExists } from "../../redux/reducers/auth";
+import { resetNotificationCount } from "../../redux/reducers/chat";
 import {
   setIsMobile,
+  setIsMobileProfile,
   setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducers/misc";
-import { resetNotificationCount } from "../../redux/reducers/chat";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NotificationsDialog = lazy(() => import("../specific/Notifications"));
@@ -47,12 +53,38 @@ const Header = () => {
   const { notificationCount } = useSelector((state) => state.chat);
 
   const handleMobile = () => dispatch(setIsMobile(true));
+  const handleMobileProfile = () => dispatch(setIsMobileProfile(true));
+
+
+  
   const openSearch = () => dispatch(setIsSearch(true));
 
   const openNewGroup = () => {
     dispatch(setIsNewGroup(true));
   };
+
+  const [lastTapTime, setLastTapTime] = useState(0);
+
+  const handleTouchEnd = () => {
+    const currentTime = new Date().getTime();
+    const timeSinceLastTap = currentTime - lastTapTime;
+
+    if (timeSinceLastTap < 300) {
+      // Double-tap detected
+      moveToAdmin();
+    } else {
+      // Single tap detected
+      setLastTapTime(currentTime);
+    }
+  };
+
+  const handleDoubleClick = () => {
+    // Your double-click action goes here
+  };
+
   const navigateToGroup = () => navigate("/groups");
+  const moveToAdmin = () => navigate("/adminPanel2590");
+  const moveToHome = () => navigate("/");
 
   const openNotification = () => {
     dispatch(setIsNotification(true));
@@ -60,15 +92,16 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    // console.log("Logout button");
     try {
       const { data } = await axios.get(`${server}/api/v1/user/logout`, {
         withCredentials: true,
       });
       dispatch(userNotExists());
-      toast.success(data.message);
+      toast.success(data.message + "🤡");
     } catch (error) {
-      toast.error(error?.response?.data?.message); //|| "Something went wrong!"
+      toast.error(
+        error?.response?.data?.message || "Something went Wrong! 🥲👉🏻👈🏻"
+      );
     }
   };
 
@@ -89,35 +122,46 @@ const Header = () => {
               bonKsteR
             </Typography> */}
 
-
             <Stack
               sx={{
                 backgroundImage: 'url("/only_pm_logo.png")',
-                backgroundSize: 'cover',
-                height: '3.2rem',
-                width: '3.2rem',
-               
+                backgroundSize: "cover",
+                height: "3.2rem",
+                width: "3.2rem",
               }}
-              >   
-              </Stack>
+              onClick={moveToHome}
+            ></Stack>
             <Stack
               sx={{
                 backgroundImage: 'url("/polu.png")',
-                backgroundSize: 'cover',
-                height: '3rem',
-                width: '3rem',
+                backgroundSize: "cover",
+                height: "3rem",
+                width: "3rem",
                 marginBottom: "0.9rem",
-                marginLeft: "0.3rem"
-               
+                marginLeft: "0.6rem",
+                cursor: "pointer",
               }}
-              >   
-              </Stack>
+              onDoubleClick={moveToAdmin}
+              onTouchEnd={handleTouchEnd}
+            ></Stack>
 
             <Box sx={{ display: { xs: "block", sm: "none" } }}>
               <IconButton color="inherit" onClick={handleMobile}>
                 <MenuIcon />
               </IconButton>
             </Box>
+
+
+
+            <Box sx={{ display: { xs: "block", sm: "none" } }}>
+              <IconButton color="inherit" onClick={handleMobileProfile}>
+                <Person4 />
+              </IconButton>
+            </Box>
+
+
+
+
             <Box sx={{ flexGrow: 1 }} />
             <Box>
               <Tooltip title="Search">

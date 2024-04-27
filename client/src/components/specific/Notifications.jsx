@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useErrors } from "../../hooks/hook";
 import {
   useAcceptFriendRequestMutation,
-  useGetNotificationsQuery
+  useGetNotificationsQuery,
 } from "../../redux/api/api";
 import { setIsNotification } from "../../redux/reducers/misc";
 
@@ -32,20 +32,16 @@ const Notifications = () => {
       const res = await acceptRequest({ requestId: _id, accept });
 
       if (res?.data?.success) {
-        // console.log("Use socket here");
-        toast.success(res?.data?.message);
-      } else toast.error(res.data?.error );  //|| "Something went wrong"
+        toast.success(res?.data?.message + "😎👍🏻");
+      } else toast.error(res.data?.error + "🥱" || "Something went wrong 🥱");
     } catch (error) {
-      toast.error("Something went wrong!");
-      // console.log(error);
+      toast.error("Something went Wrong! 🫢");
     }
   };
 
   const closeHandler = () => dispatch(setIsNotification(false));
 
   useErrors([{ error, isError }]);
-
-  // console.log("Data IS:=====", data.message); // instead of data.allRequests we used "message"
 
   return (
     <Dialog open={isNotification} onClose={closeHandler}>
@@ -60,7 +56,7 @@ const Notifications = () => {
         {isLoading ? (
           <Skeleton />
         ) : (
-          <>  
+          <>
             {data?.message?.length > 0 ? (
               data?.message?.map(({ sender, _id }) => (
                 <NotificationItem
@@ -89,7 +85,6 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         alignItems={"center"}
         spacing={"1rem"}
         width={"100%"}
-         
       >
         <Avatar src={avatar} />
         <Typography
@@ -112,13 +107,17 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
             sm: "row",
           }}
         >
-          <Button onClick={() => handler({ _id, accept: true })}
-           sx={{color: "skyblue"}}
+          <Button
+            onClick={() => handler({ _id, accept: true })}
+            sx={{ color: "skyblue" }}
           >
             Accept
-            </Button>
+          </Button>
 
-          <Button sx={{color: "red"}} onClick={() => handler({ _id, accept: false })}>
+          <Button
+            sx={{ color: "red" }}
+            onClick={() => handler({ _id, accept: false })}
+          >
             Reject
           </Button>
         </Stack>

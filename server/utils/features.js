@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { v4 as uuid } from "uuid";
-import {v2 as cloudinary} from "cloudinary"
 import { getBase64, getSockets } from "../lib/helper.js";
 
 const cookieOptions = {
@@ -34,17 +34,17 @@ const sendToken = (res, user, code, message) => {
   });
 };
 
-const emitEvent  = (req, event, users, data) => {
-  // console.log("Emmiting event..");
-  const io = req.app.get("io")
-const userSockets = getSockets(users)
-io.to(userSockets).emit(event, data)
+const emitEvent = (req, event, users, data) => {
+  const io = req.app.get("io");
+  const userSockets = getSockets(users);
+  io.to(userSockets).emit(event, data);
 };
 
 const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.upload( // Cloudinary method
+      cloudinary.uploader.upload(
+        // Cloudinary method
         getBase64(file),
         {
           resouce_type: "auto",
@@ -66,7 +66,7 @@ const uploadFilesToCloudinary = async (files = []) => {
     }));
     return formattedResults;
   } catch (error) {
-    throw new Error("Error in uploading files to cloudinary:", error)
+    throw new Error("Error in uploading files to cloudinary:", error);
   }
 };
 
@@ -74,13 +74,7 @@ const deleteFilesFromCloudinary = async (public_ids) => {
   // Delete files from cloudinary
 };
 
-
-
 export {
-  connectDb,
-  sendToken,
-  cookieOptions,
-  uploadFilesToCloudinary,
-  emitEvent,
-  deleteFilesFromCloudinary,
+  connectDb, cookieOptions, deleteFilesFromCloudinary, emitEvent, sendToken, uploadFilesToCloudinary
 };
+

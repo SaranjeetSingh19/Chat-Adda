@@ -10,7 +10,12 @@ import { transformImage } from "../../lib/features";
 
 const Profile = ({ user }) => {
   return (
-    <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
+    <Stack
+      spacing={"2rem"}
+      direction={"column"}
+      alignItems={"center"}
+      sx={{ bgcolor: "#2A96AD", padding: "2rem", height: "100%" }}
+    >
       <Avatar
         src={transformImage(user?.avatar?.url)}
         sx={{

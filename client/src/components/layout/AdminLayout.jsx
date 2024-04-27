@@ -19,6 +19,8 @@ import {
 import { Dashboard as DashboardIcon } from "@mui/icons-material";
 
 import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogout } from "../../redux/thunks/admin";
 
 const Link = styled(LinkComponent)`
   text-decoration: none;
@@ -55,9 +57,10 @@ const adminTabs = [
 
 const SideBar = ({ w = "100%" }) => {
   const location = useLocation();
+  const dispatch = useDispatch()
 
   const logoutHandler = () => {
-    
+    dispatch(adminLogout())
   }
 
   return (
@@ -109,10 +112,12 @@ const SideBar = ({ w = "100%" }) => {
   );
 };
 
-const isAdmin = true
 const AdminLayout = ({ children }) => {
-  const [isMobile, setIsMobile] = useState(false);
 
+  const {isAdmin} = useSelector(state => state.auth)
+  
+
+  const [isMobile, setIsMobile] = useState(false);
   const handleMobile = () => {
     setIsMobile((prev) => !prev);
   };
@@ -121,7 +126,7 @@ const AdminLayout = ({ children }) => {
     setIsMobile(false);
   };
 
-  if(!isAdmin) return <Navigate  to="/admin" />
+  if(!isAdmin) return <Navigate  to="/adminpanel2590" />
 
   return (
     <Grid container minHeight={"100vh"}>

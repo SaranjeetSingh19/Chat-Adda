@@ -28,7 +28,7 @@ const FileMenu = ({ anchorEl, chatId }) => {
   const fileChangeHandler = async (e, keys) => {
     const files = Array.from(e.target.files);
 
-    if (files.length < 0) return toast.error(`Select something to send`);
+    if (files.length < 0) return toast.error(`Select something to send 🙄`);
 
     if (files.length > 5)
       return toast.error(`You can only send 5 ${keys} at a time`);
@@ -48,10 +48,10 @@ const FileMenu = ({ anchorEl, chatId }) => {
       const res = await sendAttachments(myForm);
 
       if (res.data)
-        return toast.success(`${keys} sent successfully`, {
+        return toast.success(`${keys} sent successfully 😁🙌🏻`, {
           id: toastId,
         });
-        else toast.error(`Failed to sendy ${keys}`, {id: toastId})
+        else toast.error(`Failed to Send ${keys} 🥹👉🏻👈🏻`, {id: toastId})
     } catch (error) {
       toast.error(error, { id: toastId });
     } finally {

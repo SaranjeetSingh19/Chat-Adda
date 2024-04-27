@@ -249,7 +249,7 @@ const leaveGroup = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Group left successfully",
+      message: "Group left successfully 😣",
     });
   } catch (error) {
     return res.status(404).json({
@@ -431,10 +431,9 @@ const deleteChat = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Chat Deleted Successfully",
+      message: "Chat Deleted Successfully 😣",
     });
   } catch (error) {
-    console.log(error);
     return res.status(404).json({
       success: false,
       message: error.message,
@@ -494,5 +493,6 @@ export {
   newGroupChat,
   removeMembers,
   renameGroup,
-  sendAttachments,
+  sendAttachments
 };
+

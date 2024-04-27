@@ -4,7 +4,12 @@ import { getOtherMember } from "../lib/helper.js";
 import Chat from "../models/chat.models.js";
 import Request from "../models/request.models.js";
 import User from "../models/user.models.js";
-import { cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary } from "../utils/features.js";
+import {
+  cookieOptions,
+  emitEvent,
+  sendToken,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 
 const newUsers = async (req, res, next) => {
   try {
@@ -14,11 +19,11 @@ const newUsers = async (req, res, next) => {
 
     if (!file) return next(new Error("Please Upload Avatar"));
 
-    const result = await uploadFilesToCloudinary([file])
+    const result = await uploadFilesToCloudinary([file]);
     //File will get uploaded to cloudinary through above function
 
     const avatar = {
-      public_id: result[0].public_id ,
+      public_id: result[0].public_id,
       url: result[0].url,
     };
 
@@ -32,7 +37,6 @@ const newUsers = async (req, res, next) => {
 
     sendToken(res, user, 201, "User Created!");
   } catch (error) {
-    console.log(error);
     return res.status(404).json({
       success: false,
       message: error.code === 11000 ? "User already exist" : error.message,
@@ -45,14 +49,13 @@ const login = async (req, res, next) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username }).select("+password");
-  
-    if (!user) return next(new Error("Invalid Username or Password 1!"));
-  
+
+    if (!user) return next(new Error("Invalid Username or Password !"));
+
     const isMatch = await compare(password, user.password);
-  
-    if (!isMatch)
-    return next(new Error("Invalid Username or Password 2!"));
-  
+
+    if (!isMatch) return next(new Error("Invalid Username or Password !"));
+
     sendToken(res, user, 200, `Welcome Back, ${user.name}`);
   } catch (error) {
     return res.status(404).json({
@@ -142,7 +145,7 @@ const sendFriendRequest = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: "Friend request sent successfully !",
+      message: "Friend Request Sent Successfully! 🫣",
     });
   } catch (error) {
     return res.status(404).json({
@@ -170,7 +173,7 @@ const acceptFriendRequest = async (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        message: "Friend request rejected!",
+        message: "Friend request rejected! 😶",
       });
     }
 
@@ -187,7 +190,7 @@ const acceptFriendRequest = async (req, res, next) => {
 
     return res.status(201).json({
       success: true,
-      message: "Friend request accepted !",
+      message: "FriendRrequest Accepted! 🥳",
       senderId: request.sender._id,
     });
   } catch (error) {
@@ -278,5 +281,6 @@ export {
   logout,
   newUsers,
   searchUser,
-  sendFriendRequest,
+  sendFriendRequest
 };
+

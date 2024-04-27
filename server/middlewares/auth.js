@@ -46,12 +46,9 @@ const socketAuthenticator = async (err, socket, next) => {
     socket.user = user;
 
     return next();
-
-  } catch (error)
-   {
-    console.log(error);
+  } catch (error) {
     return next(new Error("Please login to access this page"));
   }
 };
 
-export { isAuthenticated, adminOnly, socketAuthenticator };
+export { adminOnly, isAuthenticated, socketAuthenticator };

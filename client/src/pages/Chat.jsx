@@ -8,6 +8,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   ALERTS,
+  CHAT_EXITED,
+  CHAT_JOINED,
   NEW_MESSAGE,
   START_TYPING,
   STOP_TYPING,
@@ -28,7 +30,7 @@ const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const fileMenuRef = useRef(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -87,13 +89,19 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
-    dispatch(removeNewMessageAlert(chatId));
 
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
+    
+    dispatch(removeNewMessageAlert(chatId));
+    
     return () => {
       setMessages([]);
       setMessage("");
       setOldMessages([]);
       setPage(1);
+    
+      socket.emit(CHAT_EXITED, { userId: user._id, members });
+    
     };
   }, [chatId]);
 
@@ -101,10 +109,10 @@ const Chat = ({ chatId, user }) => {
     if (bottomRef.current)
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  
+
   useEffect(() => {
-    if(chatDetails.isError) return navigate("/")
-  }, [chatDetails.isError])
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
 
   const openFileHandler = (e) => {
     dispatch(setIsFileMenu(true));
@@ -140,7 +148,7 @@ const Chat = ({ chatId, user }) => {
 
   const alertListener = useCallback(
     (data) => {
-      if(data.chatId !== data.chatId) return; 
+      if (data.chatId !== data.chatId) return;
       const messageForAlert = {
         content: data.message,
         sender: {
@@ -175,16 +183,16 @@ const Chat = ({ chatId, user }) => {
         padding={"1rem"}
         spacing={"1rem"}
         // backgroundColor={"#2A4562"}
-        
+
         height={"90%"}
         sx={{
           overflow: "hidden",
           overflow: "auto",
           backgroundImage: 'url("/chat_Bg.jpg")',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          width: '100%',
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          width: "100%",
         }}
       >
         {allMessages.map((i) => (
@@ -208,14 +216,14 @@ const Chat = ({ chatId, user }) => {
           alignItems={"center"}
           position={"relative"}
           sx={{
-            bgcolor: "#1C2932"
+            bgcolor: "#1C2932",
           }}
         >
           <IconButton
             sx={{
               position: "absolute",
               rotate: "30deg",
-              color: "#dadada"
+              color: "#dadada",
             }}
             ref={fileMenuRef}
             onClick={openFileHandler}
@@ -224,13 +232,12 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
 
           <InputBox
-       
             placeholder="Message..."
             value={message}
             onChange={inputChangeHandler}
             sx={{
               bgcolor: "#1C2932",
-              color: "white"
+              color: "white",
             }}
           />
 

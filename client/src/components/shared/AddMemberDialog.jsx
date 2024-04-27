@@ -51,7 +51,7 @@ const AddMemberDialog = ({ chatId }) => {
 
   return (
     <Dialog open={isAddMember} onClose={closeHandler}>
-      <Stack spacing={"1rem"} padding={"2rem"} width={"20rem"}>
+      <Stack spacing={"1rem"} padding={"2rem"} width={"20rem"} sx={{bgcolor: "#00242D", color: "white"}}> 
         <DialogTitle textAlign={"center"}>Add member</DialogTitle>
         <Stack spacing={"1rem"}>
           {isLoading ? (
@@ -66,7 +66,9 @@ const AddMemberDialog = ({ chatId }) => {
               />
             ))
           ) : (
-            <Typography textAlign={"center"}>No friends</Typography>
+            <Typography 
+            color={"orange"}
+            textAlign={"center"}>No friends</Typography>
           )}
         </Stack>
 

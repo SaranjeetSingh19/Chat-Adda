@@ -134,7 +134,6 @@ const Groups = () => {
   };
 
   const openAddMemberHandler = () => {
-    // console.log("Member added");
     dispatch(setIsAddMember(true));
   };
 
@@ -250,6 +249,7 @@ const Groups = () => {
           sm: "1rem",
           md: "1rem 4rem",
         }}
+     
       >
         <Button
           onClick={openAddMemberHandler}
@@ -287,7 +287,7 @@ const Groups = () => {
             backgroundColor: "#FF6347", // Tomato
             color: "white",
             "&:hover": {
-              backgroundColor: "#FF4500", // Orange Red on hover
+              backgroundColor: "#FF4500",  
             },
           }}
         >

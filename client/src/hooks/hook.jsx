@@ -7,7 +7,7 @@ const useErrors = (errors = []) => {
       if (isError) {
         if (fallback) fallback();
         else {
-          toast.error(error?.data?.message ); // || "Something went wrong"
+          toast.error(error?.data?.message + "🫢" || "Something went wrong 🫢"); //
           console.log(error);
         }
       }
@@ -23,24 +23,22 @@ const useAsyncMutation = (mutationHook) => {
 
   const executeMutation = async (toastMessage, ...args) => {
     setIsLoading(true);
-    const toastId = toast.loading(toastMessage || "Updating data...");
+    const toastId = toast.loading(toastMessage || "Updating data... 🔃");
 
     try {
       const res = await mutate(...args);
       if (res.data) {
-        toast.success(res?.data?.message || "Data updated successfully!", {
+        toast.success(res?.data?.message || "Data Updated Successfully! 😎🤘🏻", {
           id: toastId,
         });
         setData(res.data);
       } else {
-        console.log(res?.error?.data?.message);
-        toast.error(res?.error?.data?.message || "Something went wrong!", {
+        toast.error(res?.error?.data?.message || "Something went wrong! 😐", {
           id: toastId,
         });
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Kuch to gadbad hai", { id: toastId });
+      toast.error("Something Went Wrong 🫨", { id: toastId });
     } finally {
       setIsLoading(false);
     }
@@ -49,18 +47,18 @@ const useAsyncMutation = (mutationHook) => {
 };
 
 const useSocketEvents = async (socket, handlers) => {
-  useEffect(()=> {
+  useEffect(() => {
     Object.entries(handlers).forEach(([event, handler]) => {
-      socket.on(event, handler)
-    })
+      socket.on(event, handler);
+    });
 
     return () => {
       Object.entries(handlers).forEach(([event, handler]) => {
-        socket.off(event, handler)
-      })
-    }
+        socket.off(event, handler);
+      });
+    };
+  }, [socket, handlers]);
+};
 
-  }, [socket, handlers])
-}
+export { useAsyncMutation, useErrors, useSocketEvents };
 
-export { useErrors, useAsyncMutation, useSocketEvents };

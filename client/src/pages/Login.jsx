@@ -58,14 +58,16 @@ const Login = () => {
       );
 
       dispatch(userExists(data.user));
-      toast.success(data.message, {
+      toast.success(data.message + "🫡💮", {
         id: toastId,
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message , { //|| "Something went wrong"
-        id: toastId,
-      });
-      console.log(error);
+      toast.error(
+        error?.response?.data?.message || "Invalid Username or Password 🙅🏻‍♂️",
+        {
+          id: toastId,
+        }
+      );
     } finally {
       setIsLoadings(false);
     }
@@ -74,7 +76,7 @@ const Login = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    const toastId = toast.loading("Signing in...");
+    const toastId = toast.loading("Signing in...🔃");
 
     setIsLoadings(true);
 
@@ -93,22 +95,22 @@ const Login = () => {
     };
 
     try {
-      // console.log(server);
       const { data } = await axios.post(
         `${server}/api/v1/user/new`,
         formData,
         config
       );
       dispatch(userExists(data.user));
-      toast.success(data.message, {
+      toast.success(data.message + "😉", {
         id: toastId,
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message, { //  || "Something went wrong"
-        id: toastId,
-      });
-      // console.log(error.response?.data?.message);
-      // console.log(error);
+      toast.error(
+        error?.response?.data?.message || "Upload Profile Picture 😡",
+        {
+          id: toastId,
+        }
+      );
     } finally {
       setIsLoadings(false);
     }
