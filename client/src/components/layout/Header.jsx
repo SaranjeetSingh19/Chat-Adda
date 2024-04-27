@@ -55,8 +55,6 @@ const Header = () => {
   const handleMobile = () => dispatch(setIsMobile(true));
   const handleMobileProfile = () => dispatch(setIsMobileProfile(true));
 
-
-  
   const openSearch = () => dispatch(setIsSearch(true));
 
   const openNewGroup = () => {
@@ -78,9 +76,7 @@ const Header = () => {
     }
   };
 
-  const handleDoubleClick = () => {
-    // Your double-click action goes here
-  };
+  
 
   const navigateToGroup = () => navigate("/groups");
   const moveToAdmin = () => navigate("/adminPanel2590");
@@ -115,13 +111,7 @@ const Header = () => {
           }}
         >
           <Toolbar>
-            {/* <Typography
-              variant="h6"
-              sx={{ display: { xs: "none", sm: "block" } }}
-            >
-              bonKsteR
-            </Typography> */}
-
+          
             <Stack
               sx={{
                 backgroundImage: 'url("/only_pm_logo.png")',
@@ -151,16 +141,11 @@ const Header = () => {
               </IconButton>
             </Box>
 
-
-
             <Box sx={{ display: { xs: "block", sm: "none" } }}>
               <IconButton color="inherit" onClick={handleMobileProfile}>
                 <Person4 />
               </IconButton>
             </Box>
-
-
-
 
             <Box sx={{ flexGrow: 1 }} />
             <Box>

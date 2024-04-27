@@ -32,6 +32,11 @@ const Dashboard = () => {
       error: useErrors,
     },
   ]);
+  
+
+  const underProgress = () => {
+    alert("Under Progress 🧑🏻‍💻")
+  }
 
   const appBar = (
     <Paper
@@ -39,10 +44,10 @@ const Dashboard = () => {
       sx={{ padding: "2rem", margin: "2rem 0", borderRadius: "1rem" }}
     >
       <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
-        <AdminPanelSettingsIcon sx={{ fontSize: "3rem" }} />
-        <SearchField />
-        <CurveButton>
-          <SearchIcon sx={{ color: "white", fontSize: "1.8rem" }} />
+        <AdminPanelSettingsIcon sx={{ fontSize: "3rem" }} onClick={underProgress}/>
+        <SearchField onClick={underProgress}/>
+        <CurveButton onClick={underProgress}>
+          <SearchIcon sx={{ color: "white", fontSize: "1.8rem" }} onClick={underProgress} />
         </CurveButton>
         <Box flexGrow={2}>
           <Typography
@@ -56,7 +61,7 @@ const Dashboard = () => {
             {moment().format("dddd, D MMMM YYYY")}
           </Typography>
         </Box>
-        <NotificationIcon sx={{ fontSize: "2rem" }} />
+        <NotificationIcon sx={{ fontSize: "2rem" }} onClick={underProgress} />
       </Stack>
     </Paper>
   );

@@ -68,3 +68,5 @@ const bouncingWave = keyframes`
 export const BouncingSkeleton = styled(Skeleton)(() => ({
   animation: `${bouncingWave} 1s infinite`
 }));  // Through GPT
+
+export const ditu = `❣️`

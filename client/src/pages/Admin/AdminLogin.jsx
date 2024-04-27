@@ -37,7 +37,13 @@ const AdminLogin = () => {
   if (isAdmin) return <Navigate to="/admin/dashboard" />;
 
   return (
-    <Box sx={{ backgroundColor: "black" }}>
+    <Box sx={{
+      backgroundImage: 'url("/loginBG.jpg")',
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "100%",
+    }}>
       <Container
         component={"main"}
         maxWidth="xs"
@@ -46,6 +52,7 @@ const AdminLogin = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+    
         }}
       >
         <Paper
@@ -57,7 +64,7 @@ const AdminLogin = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            maxHeight: "98%",
+            maxHeight: "98%",       bgcolor: "#0C4545", color: "white"
           }}
         >
           {
@@ -66,6 +73,7 @@ const AdminLogin = () => {
                 position={"absolute"}
                 variant="h5"
                 marginBottom={"1.5rem"}
+                marginTop={"-0.7rem"}
               >
                 Admin Login
               </Typography>
@@ -97,13 +105,16 @@ const AdminLogin = () => {
                   type="password"
                   value={secretKey.value}
                   onChange={secretKey.changeHandler}
+                  InputLabelProps={{
+                    style: { color: "#dadada" },
+                  }}
                 />
                 <Button
                   type="submit"
                   color="primary"
                   variant="contained"
                   fullWidth
-                  sx={{ marginTop: "1.5rem" }}
+                  sx={{ marginTop: "1.5rem" , bgcolor: "skyblue", color: "royalblue"}}
                 >
                   Login
                 </Button>
